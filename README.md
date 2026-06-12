@@ -4,6 +4,14 @@
 into an editable field with a dropdown and optional controls for managing a
 group of inputs.
 
+# The plugin supports PHP-framework
+
+![Laravel](https://badge.ttsalpha.com/api?icon=Laravel&label=Laravel&color=red&labelColor=black&iconColor=red) ![CodeIgniter](https://badge.ttsalpha.com/api?icon=codeigniter&label=CodeIgniter&status=3-4&color=red&labelColor=black&iconColor=red) ![1C-Bitrix](https://badge.ttsalpha.com/api?icon=php&label=1C-Bitrix&color=red&labelColor=red&iconColor=white) ![BitriX](https://badge.ttsalpha.com/api?icon=php&label=BitriX&status=24&color=blue&labelColor=red&iconColor=white) 
+
+# The plugin supports runtime environments
+
+
+
 ## Layout modes
 
 Initialize several inputs as one group by selecting them together and setting
