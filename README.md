@@ -44,6 +44,8 @@
 - календарь и последовательный выбор часов/минут;
 - объединённый выбор даты и времени;
 - обычные и составные кнопки с отдельным действием `Play`.
+- синхронизация текущего значения с атрибутом `data-value`;
+- сохранение состояния полей, кнопок, тем и динамических групп в LocalStorage.
 
 ## Содержание
 
@@ -58,6 +60,7 @@
 - [Коннекторы](#коннекторы)
 - [Vue 3](#vue-3)
 - [Дата и время](#дата-и-время)
+- [LocalStorage](#localstorage)
 - [Кнопочные примитивы](#кнопочные-примитивы)
 - [Опции](#опции)
 - [Методы](#методы)
@@ -72,17 +75,19 @@
 
 | Файл | Назначение |
 | --- | --- |
-| `jquery.intel-field.js` | Основной плагин поля ввода |
-| `jquery.intel-field.css` | Темы и компоновка основного плагина |
-| `jquery.intel-field.ajax.js` | Удалённая загрузка вариантов |
-| `jquery.intel-field.connectors.js` | Bitrix, Laravel, CodeIgniter и Yii |
-| `jquery.intel-field.node.js` | Node.js, Express, NestJS и Fastify |
-| `jquery.intel-field.vue.js` | Vue 3 компонент и директива |
-| `jquery.intel-field.datetime.js` | Выбор даты и времени |
-| `jquery.intel-field.datetime.css` | Календарь и циферблаты |
-| `jquery.intel-button.js` | Плагин кнопочных примитивов |
-| `jquery.intel-button.css` | Стили кнопочных примитивов |
-| `intelField.html` | Полная интерактивная демонстрация |
+| `src/js/jquery.intel-dom.js` | Общие `createElement`-хелперы для всех UI-модулей |
+| `src/js/jquery.intel-field.js` | Основной плагин поля ввода |
+| `src/css/jquery.intel-field.css` | Темы и компоновка основного плагина |
+| `src/js/jquery.intel-field.ajax.js` | Удалённая загрузка вариантов |
+| `src/js/jquery.intel-field.connectors.js` | Bitrix, Laravel, CodeIgniter и Yii |
+| `src/js/jquery.intel-field.node.js` | Node.js, Express, NestJS и Fastify |
+| `src/js/jquery.intel-field.vue.js` | Vue 3 компонент и директива |
+| `src/js/jquery.intel-field.datetime.js` | Выбор даты и времени |
+| `src/css/jquery.intel-field.datetime.css` | Календарь и циферблаты |
+| `src/js/jquery.intel-button.js` | Плагин кнопочных примитивов |
+| `src/css/jquery.intel-button.css` | Стили кнопочных примитивов |
+| `src/js/jquery.intel-storage.js` | Расширение для сохранения состояния в LocalStorage |
+| `example.html` | Полная интерактивная демонстрация |
 | `PHP_CONNECTORS.md` | Контракты PHP endpoint-ов |
 | `NODE_VUE_CONNECTORS.md` | Node.js API и Vue 3 интеграция |
 
@@ -91,29 +96,33 @@
 Минимальное подключение:
 
 ```html
-<link rel="stylesheet" href="jquery.intel-field.css">
+<link rel="stylesheet" href="src/css/jquery.intel-field.css">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="jquery.intel-field.js"></script>
+<script src="src/js/jquery.intel-dom.js"></script>
+<script src="src/js/jquery.intel-field.js"></script>
 ```
 
 Все дополнительные модули подключаются после core в таком порядке:
 
 ```html
-<link rel="stylesheet" href="jquery.intel-field.css">
-<link rel="stylesheet" href="jquery.intel-field.datetime.css">
-<link rel="stylesheet" href="jquery.intel-button.css">
+<link rel="stylesheet" href="src/css/jquery.intel-field.css">
+<link rel="stylesheet" href="src/css/jquery.intel-field.datetime.css">
+<link rel="stylesheet" href="src/css/jquery.intel-button.css">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="jquery.intel-field.js"></script>
-<script src="jquery.intel-field.ajax.js"></script>
-<script src="jquery.intel-field.connectors.js"></script>
-<script src="jquery.intel-field.node.js"></script>
-<script src="jquery.intel-field.vue.js"></script>
-<script src="jquery.intel-field.datetime.js"></script>
-<script src="jquery.intel-button.js"></script>
+<script src="src/js/jquery.intel-dom.js"></script>
+<script src="src/js/jquery.intel-field.js"></script>
+<script src="src/js/jquery.intel-field.ajax.js"></script>
+<script src="src/js/jquery.intel-field.connectors.js"></script>
+<script src="src/js/jquery.intel-field.node.js"></script>
+<script src="src/js/jquery.intel-field.vue.js"></script>
+<script src="src/js/jquery.intel-field.datetime.js"></script>
+<script src="src/js/jquery.intel-button.js"></script>
+<script src="src/js/jquery.intel-storage.js"></script>
 ```
 
+`jquery.intel-dom.js` обязателен для основного плагина и кнопок.
 `jquery.intel-field.node.js` требует ранее подключённые AJAX и connectors
 модули. `jquery.intel-field.vue.js` требует основной плагин и Vue 3 runtime.
 
@@ -396,13 +405,47 @@ Time picker: `format`, `minuteStep`, `initialTime`, `closeOnSelect`,
 `minuteText`.
 
 Дата и время могут быть объединены в одну `joined-row` группу, как в примере 5
-файла `intelField.html`.
+файла `example.html`.
+
+## LocalStorage
+
+Расширение можно включить для отдельного поля или кнопки через опцию `storage`:
+
+```js
+$("#project").intelField({
+  storage: {
+    enabled: true,
+    namespace: "project-form",
+    key: "project"
+  }
+});
+```
+
+Для сохранения целого блока примеров, включая темы, значения, добавленные поля,
+состояния кнопок и журналы событий:
+
+```js
+var storage = $.intelLocalStorage.bindContainer(".examples", {
+  namespace: "intel-field-demo",
+  key: "example-blocks",
+  restore: true
+});
+
+storage.save();
+storage.restore();
+storage.clear();
+storage.destroy();
+```
 
 ## Кнопочные примитивы
 
 ```html
 <button id="plain" type="button">Обычная кнопка</button>
-<button id="runner" type="button">Запустить сценарий</button>
+<button id="check" type="button">Выбрать значение</button>
+<button id="switcher" type="button">Переключиться</button>
+<button id="document" type="button">Изменить</button>
+<button id="save" type="button">Сохранить</button>
+<button id="transfer" type="button">Перенести</button>
 ```
 
 ```js
@@ -411,20 +454,66 @@ $("#plain").intelButton({
   onClick: function () {}
 });
 
-$("#runner").intelButton({
-  variant: "split-play",
-  playText: "Play",
-  playTitle: "Запустить",
-  onClick: function () {},
+$("#check").intelButton({
+  variant: "checkbox",
+  onCheck: function (event) {
+    console.log(event.checked);
+  }
+});
+
+$("#switcher").intelButton({
+  variant: "reveal-play",
   onPlay: function () {}
+});
+
+$("#document").intelButton({
+  variant: "reveal-document",
+  onDocument: function () {}
+});
+
+$("#save").intelButton({
+  variant: "async-save",
+  loadingText: "Сохранение",
+  completeText: "Редактировать",
+  onPlay: function () {
+    return fetch("/api/save", { method: "POST" });
+  },
+  onComplete: function () {},
+  onEdit: function () {}
+});
+
+$("#transfer").intelButton({
+  variant: "async-transfer",
+  loadingText: "Перенос",
+  completeBehavior: "hide",
+  onPlay: function () {
+    return fetch("/api/transfer", { method: "POST" });
+  }
 });
 ```
 
-Варианты: `text` и `split-play`. Размеры: `small`, `medium`, `large`. Темы:
-`dark`, `light`.
+Варианты:
 
-Методы: `setTheme(theme)`, `setDisabled(disabled)`, `destroy()`.
-События: `intelbutton:click`, `intelbutton:play`.
+- `text` — обычная текстовая кнопка;
+- `split-play` — основная кнопка и отдельный Play справа;
+- `checkbox` — checkbox слева, разделитель и подпись;
+- `reveal-play` — Play слева, подпись раскрывается при наведении;
+- `reveal-document` — иконка документа слева и раскрывающаяся подпись;
+- `async-save` — Play справа, прелоадер и состояние «Редактировать»;
+- `async-transfer` — двойной Play справа, прелоадер и скрытие после завершения.
+
+Опция `completeBehavior` задаёт программируемое завершение асинхронной кнопки:
+`edit`, `hide`, `reset` или пользовательское состояние без автоматического действия.
+
+Размеры: `small`, `medium`, `large`. Темы: `dark`, `light`.
+
+Методы: `setChecked(checked)`, `toggleChecked()`, `setLoading(loading)`,
+`complete(value)`, `fail(error)`, `reset()`, `setTheme(theme)`,
+`setDisabled(disabled)`, `destroy()`.
+
+События: `intelbutton:click`, `intelbutton:play`, `intelbutton:change`,
+`intelbutton:document`, `intelbutton:complete`, `intelbutton:error`,
+`intelbutton:edit`.
 
 ## Опции
 
@@ -518,7 +607,7 @@ $("#project").on("intelfield:save", function (event, data) {
 
 ## Демонстрация
 
-Откройте `intelField.html`. Страница содержит примеры всех режимов, date/time,
+Откройте `example.html`. Страница содержит примеры всех режимов, date/time,
 динамических полей, кнопок и переключения светлой/тёмной темы.
 
 ## Лицензия
