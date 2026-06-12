@@ -1,46 +1,171 @@
 # intelField
 
-`intelField` is a configurable jQuery plugin that turns a regular text input
-into an editable field with a dropdown and optional controls for managing a
-group of inputs.
+[![jQuery](https://img.shields.io/badge/jQuery-3.7%2B-0769AD?logo=jquery&logoColor=white)](https://jquery.com/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES2017%2B-F7DF1E?logo=javascript&logoColor=000)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3-42B883?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![License](https://img.shields.io/badge/License-GPL--3.0-2C3E50)](LICENSE)
 
-# The plugin supports PHP-framework
+Настраиваемый набор jQuery-плагинов для интеллектуальных полей ввода,
+контекстного поиска, динамических групп, выбора даты и времени, AJAX-загрузки
+данных и кнопочных примитивов.
 
-![Laravel](https://badge.ttsalpha.com/api?icon=Laravel&label=Laravel&color=red&labelColor=black&iconColor=red) ![CodeIgniter](https://badge.ttsalpha.com/api?icon=codeigniter&label=CodeIgniter&status=3-4&color=red&labelColor=black&iconColor=red) ![1C-Bitrix](https://badge.ttsalpha.com/api?icon=php&label=1C-Bitrix&color=red&labelColor=red&iconColor=white) ![BitriX](https://badge.ttsalpha.com/api?icon=php&label=BitriX&status=24&color=blue&labelColor=red&iconColor=white) 
+Основной плагин превращает обычный `<input>` в контрол с режимами просмотра и
+редактирования, dropdown-списком, автоматическим сохранением и управлением
+группой полей. Дополнительные модули подключаются независимо.
 
-# The plugin supports runtime environments
+## Поддерживаемые интеграции
 
+**PHP-фреймворки**
 
+[![1C-Bitrix](https://img.shields.io/badge/1C--Bitrix-connector-EF3B39)](PHP_CONNECTORS.md#bitrix)
+[![Laravel](https://img.shields.io/badge/Laravel-connector-FF2D20?logo=laravel&logoColor=white)](PHP_CONNECTORS.md#laravel)
+[![CodeIgniter](https://img.shields.io/badge/CodeIgniter-connector-EF4223?logo=codeigniter&logoColor=white)](PHP_CONNECTORS.md#codeigniter)
+[![Yii](https://img.shields.io/badge/Yii-connector-40B3D8)](PHP_CONNECTORS.md#yii)
 
-## Layout modes
+**Node.js-фреймворки**
 
-Initialize several inputs as one group by selecting them together and setting
-`layout.groupInputs` to `true`.
+[![Node.js](https://img.shields.io/badge/Node.js-connector-339933?logo=nodedotjs&logoColor=white)](NODE_VUE_CONNECTORS.md#nodejs-api-connector)
+[![Express](https://img.shields.io/badge/Express-connector-000000?logo=express&logoColor=white)](NODE_VUE_CONNECTORS.md#nodejs-api-connector)
+[![NestJS](https://img.shields.io/badge/NestJS-connector-E0234E?logo=nestjs&logoColor=white)](NODE_VUE_CONNECTORS.md#nodejs-api-connector)
+[![Fastify](https://img.shields.io/badge/Fastify-connector-000000?logo=fastify&logoColor=white)](NODE_VUE_CONNECTORS.md#nodejs-api-connector)
+
+## Возможности
+
+- объединение от 1 до 5 полей в один `joined-row` контрол;
+- отдельные поля в строку или столбец;
+- просмотр без рамки и редактирование по двойному клику;
+- dropdown и контекстный поиск с клавиатурной навигацией;
+- автоматическое сохранение после выбора и при потере фокуса;
+- динамическое добавление и удаление полей;
+- произвольные темы, размеры, цвета и иконки действий;
+- AJAX-загрузка с debounce, отменой запросов и кэшем;
+- коннекторы для PHP- и Node.js-фреймворков;
+- Vue 3 компонент и директива с поддержкой `v-model`;
+- календарь и последовательный выбор часов/минут;
+- объединённый выбор даты и времени;
+- обычные и составные кнопки с отдельным действием `Play`.
+
+## Содержание
+
+- [Файлы проекта](#файлы-проекта)
+- [Подключение](#подключение)
+- [Быстрый старт](#быстрый-старт)
+- [Режимы компоновки](#режимы-компоновки)
+- [Просмотр и редактирование](#просмотр-и-редактирование)
+- [Контекстный поиск](#контекстный-поиск)
+- [Автоматическое сохранение](#автоматическое-сохранение)
+- [AJAX](#ajax)
+- [Коннекторы](#коннекторы)
+- [Vue 3](#vue-3)
+- [Дата и время](#дата-и-время)
+- [Кнопочные примитивы](#кнопочные-примитивы)
+- [Опции](#опции)
+- [Методы](#методы)
+- [События](#события)
+- [Демонстрация](#демонстрация)
+
+## Файлы проекта
+
+| Файл | Назначение |
+| --- | --- |
+| `jquery.intel-field.js` | Основной плагин поля ввода |
+| `jquery.intel-field.css` | Темы и компоновка основного плагина |
+| `jquery.intel-field.ajax.js` | Удалённая загрузка вариантов |
+| `jquery.intel-field.connectors.js` | Bitrix, Laravel, CodeIgniter и Yii |
+| `jquery.intel-field.node.js` | Node.js, Express, NestJS и Fastify |
+| `jquery.intel-field.vue.js` | Vue 3 компонент и директива |
+| `jquery.intel-field.datetime.js` | Выбор даты и времени |
+| `jquery.intel-field.datetime.css` | Календарь и циферблаты |
+| `jquery.intel-button.js` | Плагин кнопочных примитивов |
+| `jquery.intel-button.css` | Стили кнопочных примитивов |
+| `intelField.html` | Полная интерактивная демонстрация |
+| `PHP_CONNECTORS.md` | Контракты PHP endpoint-ов |
+| `NODE_VUE_CONNECTORS.md` | Node.js API и Vue 3 интеграция |
+
+## Подключение
+
+Минимальное подключение:
+
+```html
+<link rel="stylesheet" href="jquery.intel-field.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="jquery.intel-field.js"></script>
+```
+
+Все дополнительные модули подключаются после core в таком порядке:
+
+```html
+<link rel="stylesheet" href="jquery.intel-field.css">
+<link rel="stylesheet" href="jquery.intel-field.datetime.css">
+<link rel="stylesheet" href="jquery.intel-button.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="jquery.intel-field.js"></script>
+<script src="jquery.intel-field.ajax.js"></script>
+<script src="jquery.intel-field.connectors.js"></script>
+<script src="jquery.intel-field.node.js"></script>
+<script src="jquery.intel-field.vue.js"></script>
+<script src="jquery.intel-field.datetime.js"></script>
+<script src="jquery.intel-button.js"></script>
+```
+
+`jquery.intel-field.node.js` требует ранее подключённые AJAX и connectors
+модули. `jquery.intel-field.vue.js` требует основной плагин и Vue 3 runtime.
+
+## Быстрый старт
+
+```html
+<input id="project" name="project" placeholder="Выберите проект">
+```
+
+```js
+$("#project").intelField({
+  items: [
+    { value: "website", label: "Проект:", text: "Сайт" },
+    { value: "mobile", label: "Проект:", text: "Мобильное приложение" }
+  ],
+  appearance: {
+    theme: "dark",
+    accentColor: "#6574e8"
+  },
+  onSave: function (event) {
+    console.log(event.value, event.previousValue, event.source);
+  }
+});
+```
+
+Элемент dropdown может содержать `value`, `label`, `text`, `name`, `type` и
+`keywords`. Итоговую строку формирует `valueFormatter`.
+
+## Режимы компоновки
+
+Для общей группы выберите несколько input-элементов одним jQuery-селектором и
+укажите `layout.groupInputs: true`.
+
+| Режим | Описание |
+| --- | --- |
+| `joined-row` | От 1 до 5 сегментов выглядят как один контрол с разделителями |
+| `separate-row` | Отдельные поля располагаются в одной строке с переносом |
+| `separate-column` | Отдельные поля располагаются друг под другом |
 
 ```js
 $(".route-field").intelField({
   layout: {
     mode: "joined-row",
-    groupInputs: true,
-    columns: 5
+    groupInputs: true
   },
   behavior: {
     minFields: 1,
-    maxFields: 5
+    maxFields: 5,
+    allowAdd: false
   }
 });
 ```
 
-Available modes:
+`layout.columns` задаёт желаемое число колонок для `separate-row`.
 
-- `joined-row`: 1-5 input segments look like one control with separators.
-- `separate-row`: separate controls in one horizontal wrapping block.
-- `separate-column`: separate controls stacked vertically.
-
-`columns` controls the preferred number of columns for `separate-row`.
-The horizontal layouts adapt on narrow screens.
-
-### Double-click editing
+## Просмотр и редактирование
 
 ```js
 $(".joined-field").intelField({
@@ -56,66 +181,11 @@ $(".joined-field").intelField({
 });
 ```
 
-The field stays borderless and readonly until double-clicked. Selection or
-focus loss saves the value and returns it to view mode.
+В режиме `view` поле может быть readonly и не иметь рамки. Двойной клик
+переводит выбранный сегмент в `edit`; сохранение или потеря фокуса возвращает
+его в просмотр.
 
-`borderlessView` is disabled by default and should be enabled explicitly only
-for controls whose surrounding layout provides the required background.
-
-## AJAX items
-
-Load `jquery.intel-field.ajax.js` after the core plugin. It adds remote item
-loading, debounce, request cancellation, caching, and response transformation.
-
-```js
-$("#remote-project").intelField({
-  search: { enabled: true, minChars: 2 },
-  ajax: {
-    enabled: true,
-    url: "/api/projects",
-    method: "GET",
-    queryParam: "q",
-    delay: 250,
-    cache: true,
-    localFilter: false,
-    transformResponse: function (response) {
-      return response.items;
-    }
-  }
-});
-```
-
-Methods: `loadItems(query, data)`, `reloadItems(query, data)`, and
-`abortLoad()`. Events: `ajaxloadstart`, `ajaxload`, `ajaxerror`, and
-`ajaxloadend`, all with the `intelfield:` prefix.
-
-## PHP framework connectors
-
-Load `jquery.intel-field.connectors.js` after the AJAX module. It includes
-`bitrix`, `laravel`, `codeigniter`, and `yii` adapters.
-
-```js
-$("#remote-project").intelFieldWithConnector("laravel", {
-  search: { enabled: true, minChars: 2 }
-}, {
-  url: "/api/intel-field/projects"
-});
-```
-
-Create an AJAX configuration manually when more customization is required:
-
-```js
-var ajax = $.intelFieldConnectors.create("yii", {
-  url: "/project/intel-field"
-});
-
-$("#project").intelField({ ajax: ajax });
-```
-
-Connectors add conventional CSRF values and normalize these response formats:
-an array, `{ items: [] }`, `{ data: [] }`, or `{ data: { items: [] } }`.
-
-## Context search
+## Контекстный поиск
 
 ```js
 $("#person-search").intelField({
@@ -125,7 +195,7 @@ $("#person-search").intelField({
     enabled: true,
     minChars: 1,
     openOnFocus: false,
-    noResultsText: "Nothing found",
+    noResultsText: "Совпадений не найдено",
     selectFirstOnEnter: true,
     matcher: function (item, query) {
       return item.text.toLowerCase().includes(query.toLowerCase());
@@ -134,108 +204,23 @@ $("#person-search").intelField({
 });
 ```
 
-By default search checks the item label, text, and optional `keywords` value.
-It publishes `intelfield:search` and calls `onSearch` with `query` and
-`resultCount`.
+По умолчанию поиск проверяет `label`, `text` и `keywords`. Поддерживаются
+`ArrowUp`, `ArrowDown`, `Enter` и `Escape`.
 
-## Include
-
-```html
-<link rel="stylesheet" href="jquery.intel-field.css">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="jquery.intel-field.js"></script>
-```
-
-Optional remote-data modules:
-
-```html
-<script src="jquery.intel-field.ajax.js"></script>
-<script src="jquery.intel-field.connectors.js"></script>
-<script src="jquery.intel-field.node.js"></script>
-<script src="jquery.intel-field.vue.js"></script>
-<link rel="stylesheet" href="jquery.intel-field.datetime.css">
-<script src="jquery.intel-field.datetime.js"></script>
-```
-
-See `NODE_VUE_CONNECTORS.md` for Node.js API and Vue 3 integration examples.
-
-## Date and time pickers
-
-The optional date/time module adds a themed calendar and a sequential clock
-picker. Load its CSS and JavaScript after the core plugin.
+### Дополнительное действие «Открыть»
 
 ```js
-$("#date").intelFieldDate({
-  appearance: { theme: "light", accentColor: "#7c3aed" },
-  picker: {
-    locale: "ru-RU",
-    format: "DD.MM.YYYY",
-    min: "01.01.2026",
-    max: "31.12.2027"
-  }
-});
-
-$("#time").intelFieldTime({
-  picker: {
-    initialTime: "12:00",
-    minuteStep: 5
+$("#person-search").intelField({
+  behavior: { allowOpen: true },
+  onOpenAction: function (event) {
+    console.log("Открыть объект:", event.value);
   }
 });
 ```
 
-Date selection emits `intelfield:dateselect`; completed time selection emits
-`intelfield:timeselect`. Both update the input and use the standard `save()`
-flow with sources `date` and `time`.
+Действие публикует событие `intelfield:actionopen` и не раскрывает dropdown.
 
-```html
-<input id="project" name="project[]" placeholder="Select a project">
-```
-
-```js
-$("#project").intelField({
-  items: [
-    { label: "Project:", text: "Website", value: "website" },
-    { label: "Project:", text: "Mobile app", value: "mobile" }
-  ],
-  behavior: {
-    applyOnSelect: true,
-    maxFields: 5
-  },
-  appearance: {
-    theme: "dark",
-    size: "medium",
-    accentColor: "#6574e8"
-  }
-});
-```
-
-## Main options
-
-- `items`: array or function returning dropdown item objects.
-- `startMode`: `auto`, `view`, or `edit`.
-- `emptyText`: text shown when `items` is empty.
-- `layout`: group mode, collection grouping, and preferred column count.
-- `search`: contextual filtering and keyboard selection settings.
-- `behavior`: enables actions and changes input behavior.
-- `appearance`: theme, size, custom class, colors, and border radius.
-- `buttons`: icon and title for every control.
-- `valueFormatter(item)`: creates the input value from a selected item.
-- `itemLabel(item)` and `itemText(item)`: format dropdown columns.
-- `validate(value, instance)`: return `false` to reject apply.
-
-### Behavior options
-
-`allowSelect`, `allowEdit`, `allowApply`, `allowClear`, `allowAdd`,
-`allowPrepend`, `allowRemove`, `applyOnSelect`, `readonlyOnView`,
-`outerControlsInView`, `closeOnOutsideClick`, `enterApplies`, `escapeAction`,
-`autoSaveOnSelect`, `autoSaveOnBlur`, `minFields`, `maxFields`, `removeLast`,
-`focusNewField`, `editOnDblClick`, `viewOnBlur`, `borderlessView`,
-`requireValue`, and `disabled`.
-
-## Automatic saving
-
-Automatic saving is enabled by default for selection and focus loss. It saves
-only when the value differs from the last saved value.
+## Автоматическое сохранение
 
 ```js
 $("#project").intelField({
@@ -250,30 +235,252 @@ $("#project").intelField({
 });
 ```
 
-`event.source` is `select`, `blur`, `apply`, or `api`. `save()` does not change
-the edit/view mode. `apply()` saves and then switches the field to view mode.
+Сохранение выполняется только при изменении значения. Источник `source` может
+быть `select`, `blur`, `apply`, `api`, `date` или `time`.
 
-### Appearance options
+`save()` сохраняет значение без обязательной смены режима. `apply()` сохраняет
+его и переводит поле в `view`.
 
-- `theme`: `dark` or `light`.
-- `size`: `small`, `medium`, or `large`.
-- `className`: extra class for the generated group.
-- `accentColor`, `backgroundColor`, `textColor`, `borderColor`.
-- `borderRadius`: any valid CSS length.
+## AJAX
 
-## Methods
+```js
+$("#remote-project").intelField({
+  search: { enabled: true, minChars: 2 },
+  ajax: {
+    enabled: true,
+    url: "/api/projects",
+    method: "GET",
+    queryParam: "q",
+    delay: 250,
+    cache: true,
+    transformResponse: function (response) {
+      return response.items;
+    }
+  }
+});
+```
+
+Поддерживаются debounce, отмена активного запроса, кэширование, загрузка при
+инициализации/открытии/поиске и пользовательское преобразование ответа.
+
+Основные AJAX-опции: `url`, `method`, `dataType`, `queryParam`, `delay`,
+`minChars`, `loadOnInit`, `loadOnOpen`, `loadOnSearch`, `localFilter`, `cache`,
+`loadingText`, `data`, `headers`, `requestOptions`, `buildData` и
+`transformResponse`.
+
+Методы: `loadItems(query, data)`, `reloadItems(query, data)`, `abortLoad()`.
+
+## Коннекторы
+
+### PHP
+
+```js
+$("#remote-project").intelFieldWithConnector("laravel", {
+  search: { enabled: true, minChars: 2 }
+}, {
+  url: "/api/intel-field/projects"
+});
+```
+
+Доступные имена: `bitrix`, `laravel`, `codeigniter`, `yii`.
+
+```js
+var ajaxOptions = $.intelFieldConnectors.create("yii", {
+  url: "/project/intel-field"
+});
+
+$("#project").intelField({ ajax: ajaxOptions });
+```
+
+Принимаются массив и envelope-форматы `{ items: [] }`, `{ data: [] }` и
+`{ data: { items: [] } }`. Подробности CSRF и endpoint-контрактов находятся в
+[PHP_CONNECTORS.md](PHP_CONNECTORS.md).
+
+### Node.js
+
+```js
+$("#project").intelFieldWithConnector("nestjs", {
+  search: { enabled: true, minChars: 2 }
+}, {
+  url: "/api/projects",
+  token: function () {
+    return sessionStorage.getItem("access_token");
+  },
+  responsePath: "data.results",
+  mapItem: function (project) {
+    return { value: project.id, label: "Проект:", text: project.name };
+  }
+});
+```
+
+Псевдонимы одного адаптера: `node`, `nodejs`, `express`, `nestjs`, `fastify`.
+Поддерживаются Bearer-токены, cookie-сессии, CSRF, CORS, pagination,
+`responsePath`, `mapItem`, `buildData` и произвольные JSON envelope.
+
+Полный список параметров и Express endpoint-пример: [NODE_VUE_CONNECTORS.md](NODE_VUE_CONNECTORS.md).
+
+## Vue 3
+
+```js
+const app = Vue.createApp({
+  data() {
+    return {
+      project: "",
+      fieldOptions: { items: projects }
+    };
+  }
+});
+
+app.use(IntelFieldVue, {
+  Vue: Vue,
+  componentName: "IntelField",
+  directiveName: "intel-field"
+});
+```
+
+```html
+<intel-field
+  v-model="project"
+  :options="fieldOptions"
+  placeholder="Выберите проект"
+  @save="handleSave"
+/>
+```
+
+Также доступна директива `v-intel-field`. Компонент передаёт события input,
+change, select, save, apply, search, open, close, invalid и AJAX-события. Через
+exposed-метод `call(method, ...args)` доступен API jQuery-плагина.
+
+## Дата и время
+
+```js
+$("#date").intelFieldDate({
+  picker: {
+    locale: "ru-RU",
+    format: "DD.MM.YYYY",
+    min: "01.01.2026",
+    max: "31.12.2027",
+    viewOnSelect: true,
+    displayFormatter: function (date, value) {
+      var day = new Intl.DateTimeFormat("ru-RU", { weekday: "long" }).format(date);
+      return value + " (" + day + ")";
+    }
+  }
+});
+
+$("#time").intelFieldTime({
+  picker: {
+    initialTime: "12:00",
+    minuteStep: 5,
+    viewOnSelect: true,
+    displayFormatter: function (time, value) {
+      return value + " (день)";
+    }
+  }
+});
+```
+
+Дата публикует `intelfield:dateselect`, время — `intelfield:timeselect`.
+Payload содержит исходное `value` и форматированное `displayValue`.
+
+Date picker: `locale`, `format`, `weekStartsOn`, `min`, `max`, `initialDate`,
+`closeOnSelect`, `saveOnSelect`, `viewOnSelect`, `readonlyInput`,
+`displayFormatter`, `todayText`.
+
+Time picker: `format`, `minuteStep`, `initialTime`, `closeOnSelect`,
+`saveOnSelect`, `viewOnSelect`, `readonlyInput`, `displayFormatter`, `hourText`,
+`minuteText`.
+
+Дата и время могут быть объединены в одну `joined-row` группу, как в примере 5
+файла `intelField.html`.
+
+## Кнопочные примитивы
+
+```html
+<button id="plain" type="button">Обычная кнопка</button>
+<button id="runner" type="button">Запустить сценарий</button>
+```
+
+```js
+$("#plain").intelButton({
+  variant: "text",
+  onClick: function () {}
+});
+
+$("#runner").intelButton({
+  variant: "split-play",
+  playText: "Play",
+  playTitle: "Запустить",
+  onClick: function () {},
+  onPlay: function () {}
+});
+```
+
+Варианты: `text` и `split-play`. Размеры: `small`, `medium`, `large`. Темы:
+`dark`, `light`.
+
+Методы: `setTheme(theme)`, `setDisabled(disabled)`, `destroy()`.
+События: `intelbutton:click`, `intelbutton:play`.
+
+## Опции
+
+### Основные
+
+| Опция | Назначение |
+| --- | --- |
+| `items` | Массив вариантов или функция, возвращающая массив |
+| `startMode` | `auto`, `view` или `edit` |
+| `emptyText` | Текст пустого dropdown |
+| `layout` | Режим и параметры группировки |
+| `search` | Контекстная фильтрация |
+| `behavior` | Доступные действия и поведение поля |
+| `appearance` | Тема, размер, цвета и CSS-класс |
+| `buttons` | Иконки и title управляющих кнопок |
+| `valueFormatter` | Формирует значение из выбранного item |
+| `itemLabel`, `itemText` | Формируют колонки dropdown |
+| `validate` | Возвращает `false`, если значение недопустимо |
+
+### Behavior
+
+`allowSelect`, `allowOpen`, `allowEdit`, `allowApply`, `allowClear`, `allowAdd`,
+`allowPrepend`, `allowRemove`, `applyOnSelect`, `autoSaveOnSelect`,
+`autoSaveOnBlur`, `editOnDblClick`, `viewOnBlur`, `borderlessView`,
+`readonlyOnView`, `outerControlsInView`, `closeOnOutsideClick`, `enterApplies`,
+`escapeAction`, `minFields`, `maxFields`, `removeLast`, `focusNewField`,
+`requireValue`, `disabled`.
+
+### Appearance
+
+| Опция | Значения |
+| --- | --- |
+| `theme` | `dark`, `light` |
+| `size` | `small`, `medium`, `large` |
+| `className` | Дополнительные классы общей группы |
+| `accentColor` | Акцентный CSS-цвет |
+| `backgroundColor` | Цвет фона |
+| `textColor` | Цвет текста |
+| `borderColor` | Цвет границы |
+| `borderRadius` | Любая допустимая CSS-длина |
+
+## Методы
 
 ```js
 var $field = $("#project").intelField(options);
 
 $field.intelField("value");
-$field.intelField("value", "Project: Website");
+$field.intelField("value", "Проект: Сайт");
+$field.intelField("setItems", items);
+$field.intelField("search", "сайт");
 $field.intelField("setMode", "edit", true);
 $field.intelField("open");
 $field.intelField("close");
+$field.intelField("toggle");
 $field.intelField("save", "api");
+$field.intelField("apply");
+$field.intelField("clear");
 $field.intelField("add", "after");
 $field.intelField("remove");
+$field.intelField("openAction");
 $field.intelField("setDisabled", true);
 $field.intelField("setTheme", "light");
 $field.intelField("option", "appearance.theme", "light");
@@ -282,18 +489,34 @@ $field.intelField("refresh");
 $field.intelField("destroy");
 ```
 
-## Events and callbacks
+## События
 
-Every callback also has a jQuery event with the `intelfield:` prefix:
+Каждому callback соответствует jQuery-событие с префиксом `intelfield:`.
 
-`init`, `input`, `change`, `select`, `save`, `apply`, `modechange`, `add`, `remove`,
-`open`, `close`, and `invalid`.
+| События core | Callback |
+| --- | --- |
+| `init`, `input`, `change`, `select` | `onInit`, `onInput`, `onChange`, `onSelect` |
+| `save`, `apply`, `modechange` | `onSave`, `onApply`, `onModeChange` |
+| `add`, `remove`, `actionopen` | `onAdd`, `onRemove`, `onOpenAction` |
+| `open`, `close`, `search`, `invalid` | `onOpen`, `onClose`, `onSearch`, `onInvalid` |
+
+Дополнительные события:
+
+- AJAX: `ajaxloadstart`, `ajaxload`, `ajaxerror`, `ajaxloadend`;
+- date/time: `dateselect`, `timeselect`;
+- buttons: `intelbutton:click`, `intelbutton:play`.
 
 ```js
-$("#project").on("intelfield:select", function (event, data) {
-  console.log(data.item, data.value);
+$("#project").on("intelfield:save", function (event, data) {
+  console.log(data.value, data.previousValue, data.source);
 });
 ```
 
-The matching callback option is named `onSelect`, `onApply`, `onAdd`, and so
-on. See `intelField.html` for complete examples.
+## Демонстрация
+
+Откройте `intelField.html`. Страница содержит примеры всех режимов, date/time,
+динамических полей, кнопок и переключения светлой/тёмной темы.
+
+## Лицензия
+
+Проект распространяется по лицензии [GNU GPL v3](LICENSE).
