@@ -66,7 +66,7 @@
 
 ## Документация по коннекторам
 - [Node and Vue - коннекторы](NODE_VUE_CONNECTORS.md)
-- [Laravel, Yii, Bitrix, CodeIgniter - коннекторы](PHP_CONNECTORS)
+- [Laravel, Yii, Bitrix, CodeIgniter - коннекторы](PHP_CONNECTORS.md)
 
 ## Файлы проекта
 
