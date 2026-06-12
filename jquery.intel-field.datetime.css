@@ -1,0 +1,221 @@
+.intel-field-group--picker {
+  max-width: 390px;
+}
+
+.intel-field-group--picker .intel-field__menu--picker {
+  max-height: none;
+  overflow: visible;
+}
+
+.intel-field-group--picker .intel-field-picker {
+  display: block;
+  padding: 16px;
+  color: var(--intel-field-text);
+  background: var(--intel-field-bg);
+}
+
+.intel-field-group--picker .intel-field__button--select {
+  color: var(--intel-field-accent);
+}
+
+.intel-field-calendar__header,
+.intel-field-clock__display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.intel-field-calendar__nav,
+.intel-field-calendar__today,
+.intel-field-clock__display-part,
+.intel-field-clock__number {
+  border: 0;
+  background: transparent;
+  color: var(--intel-field-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.intel-field-calendar__nav {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--intel-field-accent);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.intel-field-calendar__nav:hover,
+.intel-field-calendar__nav:focus-visible,
+.intel-field-calendar__today:hover,
+.intel-field-calendar__today:focus-visible {
+  outline: 0;
+  background: color-mix(in srgb, var(--intel-field-accent) 18%, transparent);
+}
+
+.intel-field-calendar__title {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.intel-field-calendar__weekdays,
+.intel-field-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.intel-field-calendar__weekdays {
+  margin: 14px 0 6px;
+  color: var(--intel-field-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.intel-field-calendar__day {
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--intel-field-text);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.intel-field-calendar__day:hover:not(:disabled),
+.intel-field-calendar__day:focus-visible:not(:disabled) {
+  outline: 0;
+  background: color-mix(in srgb, var(--intel-field-accent) 20%, transparent);
+  transform: scale(1.06);
+}
+
+.intel-field-calendar__day--outside {
+  color: color-mix(in srgb, var(--intel-field-muted) 55%, transparent);
+}
+
+.intel-field-calendar__day--today {
+  box-shadow: inset 0 0 0 1px var(--intel-field-accent);
+  color: var(--intel-field-accent);
+  font-weight: 700;
+}
+
+.intel-field-calendar__day--selected,
+.intel-field-calendar__day--selected:hover {
+  background: var(--intel-field-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.intel-field-calendar__day:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.intel-field-calendar__today {
+  display: block;
+  margin: 12px auto 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--intel-field-accent);
+  font-weight: 700;
+}
+
+.intel-field-clock__display {
+  justify-content: center;
+  margin-bottom: 4px;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.intel-field-clock__display-part {
+  min-width: 56px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--intel-field-muted);
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.intel-field-clock__display-part.is-active {
+  background: color-mix(in srgb, var(--intel-field-accent) 18%, transparent);
+  color: var(--intel-field-accent);
+}
+
+.intel-field-clock__separator {
+  color: var(--intel-field-muted);
+}
+
+.intel-field-clock__hint {
+  margin-bottom: 10px;
+  color: var(--intel-field-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.intel-field-clock__dial {
+  position: relative;
+  width: min(300px, 78vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, color-mix(in srgb, var(--intel-field-accent) 9%, transparent) 0 45%, transparent 46%),
+    var(--intel-field-bg-hover);
+  box-shadow: inset 0 0 0 1px var(--intel-field-border);
+}
+
+.intel-field-clock__number {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.intel-field-clock__number--inner {
+  width: 29px;
+  height: 29px;
+  color: var(--intel-field-muted);
+  font-size: 11px;
+}
+
+.intel-field-clock__number:hover,
+.intel-field-clock__number:focus-visible {
+  outline: 0;
+  background: color-mix(in srgb, var(--intel-field-accent) 22%, transparent);
+  color: var(--intel-field-accent);
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.intel-field-clock__number--active {
+  background: var(--intel-field-accent);
+  color: #fff;
+}
+
+.intel-field-clock__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--intel-field-accent);
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 480px) {
+  .intel-field-group--picker .intel-field-picker {
+    padding: 12px;
+  }
+
+  .intel-field-clock__dial {
+    width: min(270px, 82vw);
+  }
+}

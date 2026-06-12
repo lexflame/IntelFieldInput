@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jQuery intelField: режимы компоновки</title>
+  <link rel="stylesheet" href="jquery.intel-field.css">
+  <link rel="stylesheet" href="jquery.intel-field.datetime.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #101114;
+      color: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: #101114;
+    }
+
+    .page {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(27px, 5vw, 42px);
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .lead,
+    .example__description {
+      color: #9ca3af;
+      line-height: 1.55;
+    }
+
+    .examples {
+      display: grid;
+      gap: 22px;
+      margin-top: 30px;
+    }
+
+    .example {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 22px;
+      border: 1px solid #30343c;
+      border-radius: 16px;
+      background: #191b20;
+      color: #e5e7eb;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .example--light {
+      border-color: #d8dce7;
+      background: #f7f8fb;
+      color: #20242c;
+      box-shadow: 0 10px 30px rgba(30, 42, 70, 0.12);
+    }
+
+    .example--light .example__description {
+      color: #687080;
+    }
+
+    .example--light .event-log,
+    .example--light pre {
+      background: #fff;
+      color: #285b3c;
+      box-shadow: inset 0 0 0 1px #d8dce7;
+    }
+
+    .example--light code {
+      color: #5b46c5;
+    }
+
+    .example__description {
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .example__field {
+      width: 100%;
+    }
+
+    .event-log {
+      min-height: 42px;
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 8px;
+      background: #101114;
+      color: #8bd5a7;
+      font: 13px/1.45 Consolas, monospace;
+    }
+
+    code {
+      color: #b9c1ff;
+    }
+
+    pre {
+      margin: 14px 0 0;
+      padding: 14px;
+      overflow: auto;
+      border-radius: 10px;
+      background: #101114;
+      color: #c9d1d9;
+      font: 13px/1.5 Consolas, monospace;
+    }
+
+    .example__theme-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .example__theme-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid #454b57;
+      border-radius: 9px;
+      background: #272b33;
+      color: #e5e7eb;
+      font: 600 13px/1.2 "Segoe UI", system-ui, sans-serif;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .example__theme-switch:hover,
+    .example__theme-switch:focus-visible {
+      border-color: #7c89ff;
+      background: #303642;
+      outline: 0;
+    }
+
+    .example--light .example__theme-switch {
+      border-color: #c9cedb;
+      background: #fff;
+      color: #303746;
+    }
+
+    .example--light .example__theme-switch:hover,
+    .example--light .example__theme-switch:focus-visible {
+      border-color: #7c3aed;
+      background: #f0ecff;
+    }
+
+    .example__theme-icon {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 20px 12px 36px;
+      }
+
+      .example {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>intelField: режимы инпутов</h1>
+    <p class="lead">
+      Одна реализация плагина поддерживает объединенные и раздельные группы,
+      горизонтальную и вертикальную компоновку, а также контекстный поиск.
+    </p>
+
+    <section class="examples">
+      <article class="example">
+        <h2>1. Объединенная строка, от 1 до 5 инпутов</h2>
+        <p class="example__description">
+          Все сегменты выглядят как единый контрол. Между ними отображаются
+          разделители, у каждого сегмента есть собственный dropdown. В режиме
+          просмотра нет рамки и управляющих кнопок. Для изменения значения
+          сделайте двойной клик по нужному сегменту.
+        </p>
+        <div id="joined-fields" class="example__field">
+          <input class="joined-input" name="route[]" data-list="country" placeholder="Страна" value="Россия">
+          <input class="joined-input" name="route[]" data-list="city" placeholder="Город" value="Красноярск">
+          <input class="joined-input" name="route[]" data-list="office" placeholder="Офис" value="Главный">
+        </div>
+      </article>
+
+      <article class="example">
+        <h2>2. Контекстный поиск</h2>
+        <p class="example__description">
+          Dropdown фильтруется непосредственно при вводе. Поддерживаются
+          стрелки, Enter, Escape, минимальная длина запроса и пользовательский matcher.
+          Значение сохраняется сразу после выбора или при потере фокуса.
+        </p>
+        <div class="example__field">
+          <input id="search-field" name="person" placeholder="Начните вводить имя, роль или тег">
+        </div>
+        <div id="search-log" class="event-log" aria-live="polite">Введите запрос</div>
+      </article>
+
+      <article class="example">
+        <h2>3. Отдельные инпуты в одном блоке и одной строке</h2>
+        <p class="example__description">
+          Каждый инпут сохраняет собственную рамку и dropdown, а общий блок
+          располагает поля горизонтально. На узком экране они переходят в столбец.
+        </p>
+        <div id="row-fields" class="example__field">
+          <input class="row-input" name="period[]" data-list="day" placeholder="День">
+          <input class="row-input" name="period[]" data-list="month" placeholder="Месяц">
+          <input class="row-input" name="period[]" data-list="year" placeholder="Год">
+        </div>
+      </article>
+
+      <article class="example">
+        <h2>4. Отдельные инпуты в одном блоке столбцом</h2>
+        <p class="example__description">
+          Поля принадлежат одной группе, но располагаются друг под другом.
+          У каждого поля независимые значение, состояние и список вариантов.
+        </p>
+        <div id="column-fields" class="example__field">
+          <input class="column-input" name="contact[]" data-list="channel" placeholder="Канал связи">
+          <input class="column-input" name="contact[]" data-list="priority" placeholder="Приоритет">
+          <input class="column-input" name="contact[]" data-list="status" placeholder="Статус">
+        </div>
+      </article>
+
+      <article class="example">
+        <h2>5. Выбор даты</h2>
+        <p class="example__description">
+          Календарь наследует тему, accent, размеры и цвета основного плагина.
+          Поддерживаются локаль, формат значения и ограничения min/max.
+        </p>
+        <div class="example__field">
+          <input id="date-field" name="event_date" placeholder="Выберите дату">
+        </div>
+        <div id="date-log" class="event-log" aria-live="polite">Дата не выбрана</div>
+      </article>
+
+      <article class="example">
+        <h2>6. Выбор времени</h2>
+        <p class="example__description">
+          Сначала выбирается час на 24-часовом циферблате, затем минуты на
+          отдельном циферблате. После выбора минут значение сохраняется.
+        </p>
+        <div class="example__field">
+          <input id="time-field" name="event_time" placeholder="Выберите время">
+        </div>
+        <div id="time-log" class="event-log" aria-live="polite">Время не выбрано</div>
+      </article>
+
+      <article class="example">
+        <h2>7. AJAX и PHP-коннекторы</h2>
+        <p class="example__description">
+          AJAX-загрузка и адаптеры фреймворков подключаются отдельными файлами.
+          Коннектор настраивает URL, параметры запроса, CSRF и формат ответа.
+        </p>
+        <pre><code>$("#remote-field").intelFieldWithConnector("laravel", {
+  search: { enabled: true, minChars: 2 }
+}, {
+  url: "/api/intel-field/projects"
+});
+
+// Ручная перезагрузка:
+$("#remote-field").intelField("reloadItems", "проект");</code></pre>
+      </article>
+
+
+
+      <article class="example">
+        <h2>8. Node.js и Vue.js</h2>
+        <p class="example__description">
+          Node.js connector поддерживает Express, NestJS и Fastify API,
+          Bearer-токены, cookie-сессии и произвольные JSON envelope. Vue 3
+          connector предоставляет компонент с v-model и директиву.
+        </p>
+        <pre><code>$("#remote-field").intelFieldWithConnector("nestjs", {
+  search: { enabled: true, minChars: 2 }
+}, {
+  url: "/api/projects",
+  token: () => sessionStorage.getItem("access_token"),
+  responsePath: "data.results"
+});
+
+app.use(IntelFieldVue, { Vue });
+// &lt;intel-field v-model="project" :options="fieldOptions" /&gt;</code></pre>
+      </article>      
+
+      
+    </section>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="jquery.intel-field.js"></script>
+  <script src="jquery.intel-field.ajax.js"></script>
+  <script src="jquery.intel-field.connectors.js"></script>
+  <script src="jquery.intel-field.node.js"></script>
+  <script src="jquery.intel-field.vue.js"></script>
+  <script src="jquery.intel-field.datetime.js"></script>
+  <script>
+    $(function () {
+      var lists = {
+        country: [
+          { label: "Страна:", text: "Россия" },
+          { label: "Страна:", text: "Казахстан" },
+          { label: "Страна:", text: "Беларусь" }
+        ],
+        city: [
+          { label: "Город:", text: "Красноярск" },
+          { label: "Город:", text: "Москва" },
+          { label: "Город:", text: "Новосибирск" }
+        ],
+        office: [
+          { label: "Офис:", text: "Главный" },
+          { label: "Офис:", text: "Северный" },
+          { label: "Офис:", text: "Удаленный" }
+        ],
+        day: [
+          { label: "День:", text: "Понедельник" },
+          { label: "День:", text: "Пятница" }
+        ],
+        month: [
+          { label: "Месяц:", text: "Июнь" },
+          { label: "Месяц:", text: "Июль" }
+        ],
+        year: [
+          { label: "Год:", text: "2026" },
+          { label: "Год:", text: "2027" }
+        ],
+        channel: [
+          { label: "Канал:", text: "Email" },
+          { label: "Канал:", text: "Телефон" },
+          { label: "Канал:", text: "Мессенджер" }
+        ],
+        priority: [
+          { label: "Приоритет:", text: "Высокий" },
+          { label: "Приоритет:", text: "Обычный" },
+          { label: "Приоритет:", text: "Низкий" }
+        ],
+        status: [
+          { label: "Статус:", text: "Новый" },
+          { label: "Статус:", text: "В работе" },
+          { label: "Статус:", text: "Завершен" }
+        ]
+      };
+
+      function itemsForInput() {
+        return lists[$(this).data("list")] || lists.city;
+      }
+
+      function textOnly(item) {
+        return item.text;
+      }
+
+      $(".joined-input").intelField({
+        startMode: "view",
+        items: itemsForInput,
+        layout: {
+          mode: "joined-row",
+          groupInputs: true
+        },
+        behavior: {
+          allowEdit: true,
+          allowApply: false,
+          allowClear: false,
+          allowPrepend: false,
+          allowAdd: false,
+          allowRemove: false,
+          applyOnSelect: true,
+          editOnDblClick: true,
+          viewOnBlur: true,
+          borderlessView: true
+        },
+        appearance: {
+          accentColor: "#6f7bf7"
+        },
+        valueFormatter: textOnly
+      });
+
+      var people = [
+        { label: "Разработчик:", text: "Анна Смирнова", keywords: "frontend js интерфейс" },
+        { label: "Аналитик:", text: "Иван Петров", keywords: "данные отчеты sql" },
+        { label: "Дизайнер:", text: "Мария Волкова", keywords: "ui ux макеты" },
+        { label: "Менеджер:", text: "Алексей Орлов", keywords: "проект команда план" },
+        { label: "Тестировщик:", text: "Ольга Соколова", keywords: "qa автотесты качество" }
+      ];
+
+      $("#search-field").intelField({
+        startMode: "edit",
+        items: people,
+        search: {
+          enabled: true,
+          minChars: 1,
+          openOnFocus: false,
+          noResultsText: "Совпадений не найдено"
+        },
+        behavior: {
+          allowAdd: false,
+          allowPrepend: false,
+          allowRemove: false,
+          requireValue: true
+        },
+        appearance: {
+          theme: "dark",
+          accentColor: "#7c3aed"
+        },
+        onSearch: function (event) {
+          $("#search-log").text("Запрос: " + event.query + "; найдено: " + event.resultCount);
+        },
+        onSelect: function (event) {
+          $("#search-log").text("Выбран: " + event.value);
+        },
+        onSave: function (event) {
+          var source = event.source === "select" ? "выбор" : "потеря фокуса";
+          $("#search-log").text("Сохранено (" + source + "): " + event.value);
+        }
+      });
+
+      $(".row-input").intelField({
+        startMode: "edit",
+        items: itemsForInput,
+        layout: {
+          mode: "separate-row",
+          groupInputs: true,
+          columns: 3
+        },
+        behavior: {
+          allowEdit: false,
+          allowApply: false,
+          allowClear: false,
+          allowAdd: false,
+          allowPrepend: false,
+          allowRemove: false,
+          applyOnSelect: false
+        },
+        appearance: {
+          size: "small",
+          accentColor: "#00a896"
+        },
+        valueFormatter: textOnly
+      });
+
+      $(".column-input").intelField({
+        startMode: "edit",
+        items: itemsForInput,
+        layout: {
+          mode: "separate-column",
+          groupInputs: true
+        },
+        behavior: {
+          allowEdit: false,
+          allowApply: false,
+          allowAdd: false,
+          allowPrepend: false,
+          allowRemove: false,
+          applyOnSelect: false
+        },
+        appearance: {
+          accentColor: "#ed8936"
+        },
+        valueFormatter: textOnly
+      });
+
+      $("#date-field").intelFieldDate({
+        appearance: {
+          theme: "dark",
+          accentColor: "#7c3aed"
+        },
+        picker: {
+          locale: "ru-RU",
+          format: "DD.MM.YYYY",
+          min: "01.01.2026",
+          max: "31.12.2027"
+        },
+        onDateSelect: function (event) {
+          $("#date-log").text("Выбрана дата: " + event.value);
+        },
+        onSave: function (event) {
+          if (event.source === "date") {
+            $("#date-log").text("Дата сохранена: " + event.value);
+          }
+        }
+      });
+
+      $("#time-field").intelFieldTime({
+        appearance: {
+          accentColor: "#00a896"
+        },
+        picker: {
+          minuteStep: 5,
+          initialTime: "12:00"
+        },
+        onTimeSelect: function (event) {
+          $("#time-log").text("Время сохранено: " + event.value);
+        }
+      });
+
+      $(".example").each(function (index) {
+        var $example = $(this);
+        var $footer = $('<div class="example__theme-footer"></div>');
+        var $button = $("<button>", {
+          type: "button",
+          "class": "example__theme-switch",
+          "data-example-theme": "dark",
+          "aria-label": "Переключить пример " + (index + 1) + " на светлую тему"
+        }).append(
+          $('<span class="example__theme-icon" aria-hidden="true">☀</span>'),
+          $('<span class="example__theme-label">Светлая тема</span>')
+        );
+
+        $footer.append($button);
+        $example.append($footer);
+      });
+
+      $(".examples").on("click", ".example__theme-switch", function () {
+        var $button = $(this);
+        var $example = $button.closest(".example");
+        var nextTheme = $button.attr("data-example-theme") === "dark" ? "light" : "dark";
+
+        $button.attr({
+          "data-example-theme": nextTheme,
+          "aria-label": "Переключить пример на " + (nextTheme === "light" ? "темную" : "светлую") + " тему"
+        });
+        $button.find(".example__theme-icon").text(nextTheme === "light" ? "◐" : "☀");
+        $button.find(".example__theme-label").text(nextTheme === "light" ? "Темная тема" : "Светлая тема");
+        $example.toggleClass("example--light", nextTheme === "light");
+
+        $example.find(".intel-field__input").each(function () {
+          $(this).intelField("setTheme", nextTheme);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
