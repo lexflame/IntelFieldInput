@@ -64,7 +64,9 @@
 - [События](#события)
 - [Демонстрация](#демонстрация)
 
-- [Node and Vue Doc](NODE_VUE_CONNECTORS.md)
+## Документация по коннекторам
+- [Node and Vue - коннекторы](NODE_VUE_CONNECTORS.md)
+- [Laravel, Yii, Bitrix, CodeIgniter - коннекторы](PHP_CONNECTORS)
 
 ## Файлы проекта
 
