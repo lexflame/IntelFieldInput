@@ -258,6 +258,27 @@
   box-shadow: var(--intel-field-shadow);
 }
 
+.intel-field-group--detached-actions .intel-field__outer-actions {
+  gap: 8px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.intel-field-group--detached-actions .intel-field__outer-actions .intel-field__button {
+  border: 2px solid var(--intel-field-border);
+  border-radius: var(--intel-field-radius);
+  background: var(--intel-field-bg);
+  box-shadow: var(--intel-field-shadow);
+}
+
+.intel-field-group--detached-actions .intel-field__outer-actions .intel-field__button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .intel-field__button {
   display: inline-flex;
   align-items: center;
@@ -282,6 +303,10 @@
   border-left: 0;
 }
 
+.intel-field-group--detached-actions .intel-field__outer-actions .intel-field__button:first-child {
+  border-left: 2px solid var(--intel-field-border);
+}
+
 .intel-field__button:hover,
 .intel-field__button:focus-visible {
   background: var(--intel-field-bg-hover);
@@ -296,6 +321,11 @@
 .intel-field__button--select:hover,
 .intel-field__button--select:focus-visible {
   color: var(--intel-field-warning);
+}
+
+.intel-field__button--open:hover,
+.intel-field__button--open:focus-visible {
+  color: var(--intel-field-accent);
 }
 
 .intel-field__button--edit:hover,

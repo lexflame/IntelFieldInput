@@ -25,7 +25,9 @@
     initialDate: null,
     closeOnSelect: true,
     saveOnSelect: true,
+    viewOnSelect: false,
     readonlyInput: true,
+    displayFormatter: null,
     todayText: "Сегодня",
     buttons: {
       select: { icon: "▣", title: "Открыть календарь" }
@@ -37,7 +39,9 @@
     initialTime: null,
     closeOnSelect: true,
     saveOnSelect: true,
+    viewOnSelect: false,
     readonlyInput: true,
+    displayFormatter: null,
     hourText: "Выберите час",
     minuteText: "Выберите минуты",
     buttons: {
@@ -71,10 +75,10 @@
     var text = String(value).trim();
     var match;
     if (format === "YYYY-MM-DD") {
-      match = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text);
+      match = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s*\([^)]*\))?$/.exec(text);
       return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
     }
-    match = /^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/.exec(text);
+    match = /^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})(?:\s*\([^)]*\))?$/.exec(text);
     return match ? new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1])) : null;
   }
 
@@ -92,7 +96,7 @@
         minute: clamp(Number(value.minute) || 0, 0, 59)
       };
     }
-    var match = /^(\d{1,2}):(\d{1,2})$/.exec(String(value || "").trim());
+    var match = /^(\d{1,2}):(\d{1,2})(?:\s*\([^)]*\))?$/.exec(String(value || "").trim());
     if (!match) {
       return null;
     }
@@ -104,6 +108,33 @@
 
   function formatTime(time) {
     return pad(time.hour) + ":" + pad(time.minute);
+  }
+
+  function formatDateWithWeekday(date, value, context) {
+    var locale = typeof context === "string" ? context :
+      context && context.options && context.options.datePicker && context.options.datePicker.locale;
+    var weekday = new Intl.DateTimeFormat(locale || "ru-RU", { weekday: "long" }).format(date);
+    return value + " (" + weekday + ")";
+  }
+
+  function timeOfDay(hour) {
+    hour = Number(hour);
+    if (hour >= 5 && hour <= 10) {
+      return "утро";
+    }
+    if (hour >= 11 && hour <= 12) {
+      return "полдень";
+    }
+    if (hour >= 13 && hour <= 17) {
+      return "день";
+    }
+    if (hour >= 18 && hour <= 20) {
+      return "вечер";
+    }
+    if (hour >= 21 && hour <= 22) {
+      return "сумерки";
+    }
+    return "ночь";
   }
 
   function coreOptions(options, pickerOptions) {
@@ -144,8 +175,9 @@
   Picker.prototype._init = function () {
     var value = this.instance.value();
     this.instance.$group.addClass("intel-field-group--picker intel-field-group--picker-" + this.type);
+    this.instance.$item.addClass("intel-field__item--picker intel-field__item--picker-" + this.type);
     this.instance.$menu.addClass("intel-field__menu--picker").empty();
-    this.$panel = $("<li>", {
+    this.$panel = $.intelDom.create("li", {
       "class": "intel-field-picker intel-field-picker--" + this.type
     });
     this.instance.$menu.append(this.$panel);
@@ -245,7 +277,7 @@
       if (timestamp === selected) {
         classes += " intel-field-calendar__day--selected";
       }
-      days.push($("<button>", {
+      days.push($.intelDom.create("button", {
         type: "button",
         "class": classes,
         "data-picker-action": "date",
@@ -256,16 +288,16 @@
     }
 
     this.$panel.empty().append(
-      $('<div class="intel-field-calendar__header"></div>').append(
-        $('<button type="button" class="intel-field-calendar__nav" data-picker-action="previous-month" aria-label="Предыдущий месяц">‹</button>'),
-        $("<div>", { "class": "intel-field-calendar__title", text: monthTitle }),
-        $('<button type="button" class="intel-field-calendar__nav" data-picker-action="next-month" aria-label="Следующий месяц">›</button>')
-      ),
-      $("<div>", { "class": "intel-field-calendar__weekdays" }).append($.map(weekdays, function (day) {
-        return $("<span>", { text: day });
+      $.intelDom.create("div", { "class": "intel-field-calendar__header" }, [
+        $.intelDom.create("button", { type: "button", "class": "intel-field-calendar__nav", "data-picker-action": "previous-month", "aria-label": "Предыдущий месяц", text: "‹" }),
+        $.intelDom.create("div", { "class": "intel-field-calendar__title", text: monthTitle }),
+        $.intelDom.create("button", { type: "button", "class": "intel-field-calendar__nav", "data-picker-action": "next-month", "aria-label": "Следующий месяц", text: "›" })
+      ]),
+      $.intelDom.create("div", { "class": "intel-field-calendar__weekdays" }, $.map(weekdays, function (day) {
+        return $.intelDom.create("span", { text: day });
       })),
-      $("<div>", { "class": "intel-field-calendar__grid" }).append(days),
-      $("<button>", {
+      $.intelDom.create("div", { "class": "intel-field-calendar__grid" }, days),
+      $.intelDom.create("button", {
         type: "button",
         "class": "intel-field-calendar__today",
         "data-picker-action": "today",
@@ -281,14 +313,24 @@
     this.selectedDate = dateOnly(date);
     this.viewDate = this.selectedDate;
     var value = formatDate(this.selectedDate, this.options.format);
-    this.instance.value(value, true);
-    this.instance._emit("dateselect", { date: new Date(this.selectedDate.getTime()), value: value, instance: this.instance }, "onDateSelect");
+    var displayValue = $.isFunction(this.options.displayFormatter) ?
+      this.options.displayFormatter(new Date(this.selectedDate.getTime()), value, this.instance) : value;
+    this.instance.value(displayValue, true);
+    this.instance._emit("dateselect", {
+      date: new Date(this.selectedDate.getTime()),
+      value: value,
+      displayValue: displayValue,
+      instance: this.instance
+    }, "onDateSelect");
     if (this.options.saveOnSelect) {
       this.instance.save("date");
     }
     this._renderCalendar();
     if (this.options.closeOnSelect) {
       this.instance.close();
+    }
+    if (this.options.viewOnSelect) {
+      this.instance.setMode("view");
     }
   };
 
@@ -315,7 +357,7 @@
     var innerCount = values.filter(function (item) { return item.ring === "inner"; }).length;
     var outerIndex = 0;
     var innerIndex = 0;
-    var $dial = $('<div class="intel-field-clock__dial"></div>');
+    var $dial = $.intelDom.create("div", { "class": "intel-field-clock__dial" });
     $.each(values, function (_, item) {
       var ringCount = item.ring === "inner" ? innerCount : outerCount;
       var ringIndex = item.ring === "inner" ? innerIndex++ : outerIndex++;
@@ -324,7 +366,7 @@
       var left = 50 + Math.cos(angle) * radius;
       var top = 50 + Math.sin(angle) * radius;
       var activeValue = self.timeStep === "hour" ? self.time.hour : self.time.minute;
-      $dial.append($("<button>", {
+      $dial.append($.intelDom.create("button", {
         type: "button",
         "class": "intel-field-clock__number intel-field-clock__number--" + item.ring + (item.value === activeValue ? " intel-field-clock__number--active" : ""),
         "data-picker-action": self.timeStep,
@@ -332,25 +374,25 @@
         text: item.label
       }).css({ left: left + "%", top: top + "%" }));
     });
-    $dial.append('<span class="intel-field-clock__center" aria-hidden="true"></span>');
+    $dial.append($.intelDom.create("span", { "class": "intel-field-clock__center", "aria-hidden": "true" }));
 
     this.$panel.empty().append(
-      $('<div class="intel-field-clock__display"></div>').append(
-        $("<button>", {
+      $.intelDom.create("div", { "class": "intel-field-clock__display" }, [
+        $.intelDom.create("button", {
           type: "button",
           "class": "intel-field-clock__display-part" + (this.timeStep === "hour" ? " is-active" : ""),
           "data-picker-action": "show-hours",
           text: pad(this.time.hour)
         }),
-        '<span class="intel-field-clock__separator">:</span>',
-        $("<button>", {
+        $.intelDom.create("span", { "class": "intel-field-clock__separator", text: ":" }),
+        $.intelDom.create("button", {
           type: "button",
           "class": "intel-field-clock__display-part" + (this.timeStep === "minute" ? " is-active" : ""),
           "data-picker-action": "show-minutes",
           text: pad(this.time.minute)
         })
-      ),
-      $("<div>", {
+      ]),
+      $.intelDom.create("div", {
         "class": "intel-field-clock__hint",
         text: this.timeStep === "hour" ? this.options.hourText : this.options.minuteText
       }),
@@ -360,11 +402,15 @@
 
   Picker.prototype._selectTime = function () {
     var value = formatTime(this.time);
-    this.instance.value(value, true);
+    var time = { hour: this.time.hour, minute: this.time.minute };
+    var displayValue = $.isFunction(this.options.displayFormatter) ?
+      this.options.displayFormatter(time, value, this.instance) : value;
+    this.instance.value(displayValue, true);
     this.instance._emit("timeselect", {
       hour: this.time.hour,
       minute: this.time.minute,
       value: value,
+      displayValue: displayValue,
       instance: this.instance
     }, "onTimeSelect");
     if (this.options.saveOnSelect) {
@@ -372,6 +418,9 @@
     }
     if (this.options.closeOnSelect) {
       this.instance.close();
+    }
+    if (this.options.viewOnSelect) {
+      this.instance.setMode("view");
     }
     this.timeStep = "hour";
     this._renderClock();
@@ -381,7 +430,13 @@
     if (this.$panel) {
       this.$panel.off(this.namespace);
     }
-    this.instance.$group.removeClass("intel-field-group--picker intel-field-group--picker-" + this.type);
+    this.instance.$item.removeClass("intel-field__item--picker intel-field__item--picker-" + this.type);
+    if (!this.instance.$group.find(".intel-field__item--picker-" + this.type).length) {
+      this.instance.$group.removeClass("intel-field-group--picker-" + this.type);
+    }
+    if (!this.instance.$group.find(".intel-field__item--picker").length) {
+      this.instance.$group.removeClass("intel-field-group--picker");
+    }
     this.instance.$input.removeAttr("inputmode");
   };
 
@@ -410,6 +465,9 @@
   $.fn.intelFieldTime = function (options) {
     return initialize(this, "time", options || {});
   };
+
+  $.fn.intelFieldDate.formatDateWithWeekday = formatDateWithWeekday;
+  $.fn.intelFieldTime.timeOfDay = timeOfDay;
 
   var originalDestroy = $.fn.intelField.Constructor.prototype.destroy;
   $.fn.intelField.Constructor.prototype.destroy = function (preserveItem) {

@@ -2,6 +2,10 @@
   max-width: 390px;
 }
 
+.intel-field-group--picker-date.intel-field-group--picker-time.intel-field-group--layout-joined-row {
+  max-width: 760px;
+}
+
 .intel-field-group--picker .intel-field__menu--picker {
   max-height: none;
   overflow: visible;
@@ -16,6 +20,25 @@
 
 .intel-field-group--picker .intel-field__button--select {
   color: var(--intel-field-accent);
+}
+
+.intel-field-group--picker.intel-field-group--layout-joined-row .intel-field__menu--picker {
+  width: calc(100% + 2px);
+  min-width: 0;
+}
+
+.intel-field-group--picker.intel-field-group--layout-joined-row .intel-field-clock__dial {
+  width: min(300px, 100%);
+}
+
+.intel-field-group--picker.intel-field-group--layout-joined-row .intel-field__item--picker-date .intel-field__menu--picker {
+  right: auto;
+  left: -1px;
+}
+
+.intel-field-group--picker.intel-field-group--layout-joined-row .intel-field__item--picker-time .intel-field__menu--picker {
+  right: -1px;
+  left: auto;
 }
 
 .intel-field-calendar__header,

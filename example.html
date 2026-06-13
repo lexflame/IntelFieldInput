@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>jQuery intelField: режимы компоновки</title>
-  <link rel="stylesheet" href="jquery.intel-field.css">
-  <link rel="stylesheet" href="jquery.intel-field.datetime.css">
+  <link rel="stylesheet" href="src/css/jquery.intel-field.css">
+  <link rel="stylesheet" href="src/css/jquery.intel-field.datetime.css">
+  <link rel="stylesheet" href="src/css/jquery.intel-button.css">
   <style>
     :root {
       color-scheme: dark;
@@ -50,6 +51,56 @@
     .example__description {
       color: #9ca3af;
       line-height: 1.55;
+    }
+
+    .page__storage-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .storage-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border: 1px solid #5b3037;
+      border-radius: 9px;
+      background: #2b1d20;
+      color: #f28b98;
+      font: 600 13px/1.2 "Segoe UI", system-ui, sans-serif;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .storage-reset:hover,
+    .storage-reset:focus-visible {
+      border-color: #e35d6a;
+      background: #3a2328;
+      color: #ffb0ba;
+      outline: 0;
+    }
+
+    .storage-reset__icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-left-color: transparent;
+      border-radius: 50%;
+    }
+
+    .storage-reset__icon::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-right: 6px solid currentColor;
+      border-bottom: 4px solid transparent;
+      transform: rotate(-24deg);
     }
 
     .examples {
@@ -102,6 +153,130 @@
       width: 100%;
     }
 
+    .example__joined-fields .intel-field__button--edit {
+      display: none;
+    }
+
+    .example__left-add {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .example__left-add-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 2px solid #3a3a3a;
+      border-radius: 12px;
+      background: #1e1e1e;
+      color: #48bb78;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font: inherit;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .example__left-add-button::before,
+    .example__left-add-button::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+    }
+
+    .example__left-add-button::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .example__left-add-button:hover,
+    .example__left-add-button:focus-visible {
+      border-color: #6f7bf7;
+      background: #2b2b2b;
+      outline: 0;
+    }
+
+    .example__left-add-button:active {
+      transform: scale(0.94);
+    }
+
+    .example--light .example__left-add-button {
+      border-color: #d7dbe5;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(30, 42, 70, 0.12);
+    }
+
+    .example--light .example__left-add-button:hover,
+    .example--light .example__left-add-button:focus-visible {
+      border-color: #6f7bf7;
+      background: #f4f6fb;
+    }
+
+    .example-dialog {
+      width: min(420px, calc(100% - 32px));
+      padding: 0;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      background: #1e1e1e;
+      color: #e5e7eb;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .example-dialog::backdrop {
+      background: rgba(0, 0, 0, 0.68);
+    }
+
+    .example-dialog__content {
+      padding: 22px;
+    }
+
+    .example-dialog__title {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .example-dialog__text {
+      margin: 0;
+      color: #aeb4c0;
+      line-height: 1.5;
+    }
+
+    .example-dialog__actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .example-dialog__button {
+      min-height: 40px;
+      padding: 0 16px;
+      border: 1px solid #4a4f5b;
+      border-radius: 8px;
+      background: #292c33;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .example-dialog__button--primary {
+      border-color: #6f7bf7;
+      background: #6f7bf7;
+      color: #fff;
+    }
+
     .event-log {
       min-height: 42px;
       margin-top: 14px;
@@ -110,6 +285,13 @@
       background: #101114;
       color: #8bd5a7;
       font: 13px/1.45 Consolas, monospace;
+    }
+
+    .button-primitives {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
     }
 
     code {
@@ -246,31 +428,73 @@
       </article>
 
       <article class="example">
-        <h2>5. Выбор даты</h2>
+        <h2>5. Выбор даты и времени</h2>
         <p class="example__description">
-          Календарь наследует тему, accent, размеры и цвета основного плагина.
-          Поддерживаются локаль, формат значения и ограничения min/max.
+          Дата и время объединены в один контрол с разделителем. Первый сегмент
+          открывает календарь, второй — циферблаты часов и минут.
         </p>
-        <div class="example__field">
-          <input id="date-field" name="event_date" placeholder="Выберите дату">
+        <div id="datetime-fields" class="example__field">
+          <input id="date-field" class="datetime-input" name="event_date" placeholder="Выберите дату">
+          <input id="time-field" class="datetime-input" name="event_time" placeholder="Выберите время">
         </div>
-        <div id="date-log" class="event-log" aria-live="polite">Дата не выбрана</div>
+        <div id="datetime-log" class="event-log" aria-live="polite">Дата и время не выбраны</div>
       </article>
 
       <article class="example">
-        <h2>6. Выбор времени</h2>
+        <h2>6. Динамическое добавление и удаление инпутов</h2>
         <p class="example__description">
-          Сначала выбирается час на 24-часовом циферблате, затем минуты на
-          отдельном циферблате. После выбора минут значение сохраняется.
+          Кнопка «+» добавляет новую строку, а крестик удаляет выбранную.
+          Единственный оставшийся верхний инпут удалить нельзя.
         </p>
-        <div class="example__field">
-          <input id="time-field" name="event_time" placeholder="Выберите время">
+        <div id="dynamic-fields" class="example__field">
+          <input class="dynamic-input" name="dynamic_values[]" placeholder="Введите значение">
         </div>
-        <div id="time-log" class="event-log" aria-live="polite">Время не выбрано</div>
       </article>
 
       <article class="example">
-        <h2>7. AJAX и PHP-коннекторы</h2>
+        <h2>7. Одна кнопка добавления слева</h2>
+        <p class="example__description">
+          Единственная кнопка «+» расположена слева от группы и открывает
+          модальное окно. После подтверждения новый инпут добавляется в конец
+          списка. У самих инпутов управляющих кнопок нет.
+        </p>
+        <div class="example__left-add">
+          <button id="left-add-button" class="example__left-add-button" type="button" aria-label="Добавить инпут"></button>
+          <div id="left-add-fields" class="example__field">
+            <input class="left-add-input" name="left_add_values[]" placeholder="Введите значение">
+          </div>
+        </div>
+        <dialog id="left-add-dialog" class="example-dialog" aria-labelledby="left-add-dialog-title">
+          <form method="dialog" class="example-dialog__content">
+            <h3 id="left-add-dialog-title" class="example-dialog__title">Добавить инпут?</h3>
+            <p class="example-dialog__text">Новый пустой инпут будет добавлен в конец списка.</p>
+            <div class="example-dialog__actions">
+              <button class="example-dialog__button" type="button" data-dialog-action="cancel">Отмена</button>
+              <button class="example-dialog__button example-dialog__button--primary" type="submit">Добавить</button>
+            </div>
+          </form>
+        </dialog>
+      </article>
+
+      <article class="example">
+        <h2>8. Примитивы кнопок</h2>
+        <p class="example__description">
+          Текстовая кнопка, checkbox-кнопка, раскрывающиеся действия Play и
+          «Изменить», асинхронное сохранение и перенос с двойным Play.
+        </p>
+        <div class="button-primitives">
+          <button id="text-primitive" type="button">Обычная кнопка</button>
+          <button id="checkbox-primitive" type="button">Выбрать значение</button>
+          <button id="play-primitive" type="button">Переключиться</button>
+          <button id="document-primitive" type="button">Изменить</button>
+          <button id="save-primitive" type="button">Сохранить</button>
+          <button id="transfer-primitive" type="button">Перенести</button>
+        </div>
+        <div id="button-log" class="event-log" aria-live="polite">Выберите действие</div>
+      </article>
+
+      <article class="example">
+        <h2>9. AJAX и PHP-коннекторы</h2>
         <p class="example__description">
           AJAX-загрузка и адаптеры фреймворков подключаются отдельными файлами.
           Коннектор настраивает URL, параметры запроса, CSRF и формат ответа.
@@ -285,10 +509,8 @@
 $("#remote-field").intelField("reloadItems", "проект");</code></pre>
       </article>
 
-
-
       <article class="example">
-        <h2>8. Node.js и Vue.js</h2>
+        <h2>10. Node.js и Vue.js</h2>
         <p class="example__description">
           Node.js connector поддерживает Express, NestJS и Fastify API,
           Bearer-токены, cookie-сессии и произвольные JSON envelope. Vue 3
@@ -304,19 +526,20 @@ $("#remote-field").intelField("reloadItems", "проект");</code></pre>
 
 app.use(IntelFieldVue, { Vue });
 // &lt;intel-field v-model="project" :options="fieldOptions" /&gt;</code></pre>
-      </article>      
-
-      
+      </article>
     </section>
   </main>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="jquery.intel-field.js"></script>
-  <script src="jquery.intel-field.ajax.js"></script>
-  <script src="jquery.intel-field.connectors.js"></script>
-  <script src="jquery.intel-field.node.js"></script>
-  <script src="jquery.intel-field.vue.js"></script>
-  <script src="jquery.intel-field.datetime.js"></script>
+  <script src="src/js/jquery.intel-dom.js"></script>
+  <script src="src/js/jquery.intel-field.js"></script>
+  <script src="src/js/jquery.intel-field.ajax.js"></script>
+  <script src="src/js/jquery.intel-field.connectors.js"></script>
+  <script src="src/js/jquery.intel-field.node.js"></script>
+  <script src="src/js/jquery.intel-field.vue.js"></script>
+  <script src="src/js/jquery.intel-field.datetime.js"></script>
+  <script src="src/js/jquery.intel-button.js"></script>
+  <script src="src/js/jquery.intel-storage.js"></script>
   <script>
     $(function () {
       var lists = {
@@ -388,10 +611,12 @@ app.use(IntelFieldVue, { Vue });
           allowRemove: false,
           applyOnSelect: true,
           editOnDblClick: true,
+          openOnDblClick: true,
           viewOnBlur: true,
           borderlessView: true
         },
         appearance: {
+          className: "example__joined-fields",
           accentColor: "#6f7bf7"
         },
         valueFormatter: textOnly
@@ -415,6 +640,7 @@ app.use(IntelFieldVue, { Vue });
           noResultsText: "Совпадений не найдено"
         },
         behavior: {
+          allowOpen: true,
           allowAdd: false,
           allowPrepend: false,
           allowRemove: false,
@@ -429,6 +655,9 @@ app.use(IntelFieldVue, { Vue });
         },
         onSelect: function (event) {
           $("#search-log").text("Выбран: " + event.value);
+        },
+        onOpenAction: function (event) {
+          $("#search-log").text("Открыть: " + (event.value || "значение не выбрано"));
         },
         onSave: function (event) {
           var source = event.source === "select" ? "выбор" : "потеря фокуса";
@@ -481,7 +710,36 @@ app.use(IntelFieldVue, { Vue });
         valueFormatter: textOnly
       });
 
+      var datetimeLayout = {
+        mode: "joined-row",
+        groupInputs: true
+      };
+
+      var datetimeBehavior = {
+        allowEdit: true,
+        allowApply: false,
+        allowClear: false,
+        allowAdd: false,
+        allowPrepend: false,
+        allowRemove: false,
+        editOnDblClick: true,
+        viewOnBlur: true,
+        borderlessView: true
+      };
+
+      $(".datetime-input").intelField({
+        startMode: "view",
+        layout: datetimeLayout,
+        behavior: datetimeBehavior,
+        appearance: {
+          theme: "dark",
+          accentColor: "#7c3aed"
+        }
+      });
+
       $("#date-field").intelFieldDate({
+        layout: datetimeLayout,
+        behavior: datetimeBehavior,
         appearance: {
           theme: "dark",
           accentColor: "#7c3aed"
@@ -490,43 +748,185 @@ app.use(IntelFieldVue, { Vue });
           locale: "ru-RU",
           format: "DD.MM.YYYY",
           min: "01.01.2026",
-          max: "31.12.2027"
+          max: "31.12.2027",
+          viewOnSelect: true,
+          displayFormatter: $.fn.intelFieldDate.formatDateWithWeekday
         },
         onDateSelect: function (event) {
-          $("#date-log").text("Выбрана дата: " + event.value);
+          $("#datetime-log").text("Выбрана дата: " + event.value);
         },
         onSave: function (event) {
           if (event.source === "date") {
-            $("#date-log").text("Дата сохранена: " + event.value);
+            $("#datetime-log").text("Дата сохранена: " + event.value);
           }
         }
       });
 
       $("#time-field").intelFieldTime({
+        layout: datetimeLayout,
+        behavior: datetimeBehavior,
         appearance: {
-          accentColor: "#00a896"
+          theme: "dark",
+          accentColor: "#7c3aed"
         },
         picker: {
           minuteStep: 5,
-          initialTime: "12:00"
+          initialTime: "12:00",
+          viewOnSelect: true,
+          displayFormatter: function (time, value) {
+            return value + " (" + $.fn.intelFieldTime.timeOfDay(time.hour) + ")";
+          }
         },
         onTimeSelect: function (event) {
-          $("#time-log").text("Время сохранено: " + event.value);
+          $("#datetime-log").text("Время сохранено: " + event.value);
+        }
+      });
+
+      $(".dynamic-input").intelField({
+        startMode: "edit",
+        layout: {
+          mode: "separate-column",
+          groupInputs: true
+        },
+        behavior: {
+          allowSelect: false,
+          allowEdit: false,
+          allowApply: false,
+          allowClear: false,
+          allowPrepend: false,
+          allowAdd: true,
+          allowRemove: true,
+          minFields: 1,
+          removeLast: "keep",
+          viewOnBlur: false
+        },
+        appearance: {
+          accentColor: "#6f7bf7"
+        },
+        buttons: {
+          remove: { icon: "×", title: "Удалить инпут" },
+          add: { icon: "+", title: "Добавить инпут" }
+        }
+      });
+      $(".left-add-input").intelField({
+        startMode: "edit",
+        layout: {
+          mode: "separate-column",
+          groupInputs: true
+        },
+        behavior: {
+          allowSelect: false,
+          allowEdit: false,
+          allowApply: false,
+          allowClear: false,
+          allowPrepend: false,
+          allowAdd: false,
+          allowRemove: false,
+          viewOnBlur: false
+        },
+        appearance: {
+          accentColor: "#6f7bf7"
+        }
+      });
+
+      var leftAddDialog = document.getElementById("left-add-dialog");
+
+      $("#left-add-button").on("click", function () {
+        leftAddDialog.showModal();
+      });
+
+      $(leftAddDialog).on("click", "[data-dialog-action='cancel']", function () {
+        leftAddDialog.close();
+      }).on("submit", function (event) {
+        event.preventDefault();
+        var $lastInput = $("#left-add-fields .intel-field__input").last();
+        $lastInput.intelField("add", "after");
+        leftAddDialog.close();
+      });
+
+      $("#text-primitive").intelButton({
+        variant: "text",
+        onClick: function () {
+          $("#button-log").text("Нажата обычная кнопка");
+        }
+      });
+
+      $("#play-primitive").intelButton({
+        variant: "reveal-play",
+        menu: {
+          enabled: true,
+          items: [
+            { value: "workspace", text: "Рабочее пространство" },
+            { value: "project", text: "Текущий проект" }
+          ]
+        },
+        onMenuToggle: function (event) {
+          $("#button-log").text(event.open ? "Меню переключения открыто" : "Меню переключения закрыто");
+        },
+        onMenuSelect: function (event) {
+          $("#button-log").text("Выбрано: " + event.item.text);
+        }
+      });
+
+      $("#checkbox-primitive").intelButton({
+        variant: "checkbox",
+        onCheck: function (event) {
+          $("#button-log").text(event.checked ? "Значение выбрано" : "Значение не выбрано");
+        }
+      });
+
+      $("#document-primitive").intelButton({
+        variant: "reveal-document",
+        onDocument: function () {
+          $("#button-log").text("Выполнено действие: Изменить");
+        }
+      });
+
+      $("#save-primitive").intelButton({
+        variant: "async-save",
+        loadingText: "Сохранение",
+        completeText: "Редактировать",
+        onPlay: function () {
+          $("#button-log").text("Сохранение...");
+          return new Promise(function (resolve) {
+            setTimeout(resolve, 1400);
+          });
+        },
+        onComplete: function () {
+          $("#button-log").text("Сохранено. Доступно редактирование");
+        },
+        onEdit: function () {
+          $("#button-log").text("Нажата кнопка Редактировать");
+        }
+      });
+
+      $("#transfer-primitive").intelButton({
+        variant: "async-transfer",
+        loadingText: "Перенос",
+        completeBehavior: "hide",
+        onPlay: function () {
+          $("#button-log").text("Перенос...");
+          return new Promise(function (resolve) {
+            setTimeout(resolve, 1400);
+          });
+        },
+        onComplete: function () {
+          $("#button-log").text("Перенос завершен");
         }
       });
 
       $(".example").each(function (index) {
         var $example = $(this);
-        var $footer = $('<div class="example__theme-footer"></div>');
-        var $button = $("<button>", {
+        var $footer = $.intelDom.create("div", { "class": "example__theme-footer" });
+        var $button = $.intelDom.create("button", {
           type: "button",
           "class": "example__theme-switch",
           "data-example-theme": "dark",
           "aria-label": "Переключить пример " + (index + 1) + " на светлую тему"
-        }).append(
-          $('<span class="example__theme-icon" aria-hidden="true">☀</span>'),
-          $('<span class="example__theme-label">Светлая тема</span>')
-        );
+        }, [
+          $.intelDom.create("span", { "class": "example__theme-icon", "aria-hidden": "true", text: "☀" }),
+          $.intelDom.create("span", { "class": "example__theme-label", text: "Светлая тема" })
+        ]);
 
         $footer.append($button);
         $example.append($footer);
@@ -548,7 +948,32 @@ app.use(IntelFieldVue, { Vue });
         $example.find(".intel-field__input").each(function () {
           $(this).intelField("setTheme", nextTheme);
         });
+        $example.find(".intel-button__primary").each(function () {
+          $(this).intelButton("setTheme", nextTheme);
+        });
       });
+
+      var demoStorage = $.intelLocalStorage.bindContainer(".examples", {
+        namespace: "intel-field-demo",
+        key: "example-blocks",
+        restore: true
+      });
+
+      var $storageActions = $.intelDom.create("div", { "class": "page__storage-actions" });
+      var $storageReset = $.intelDom.create("button", {
+        type: "button",
+        "class": "storage-reset",
+        title: "Удалить сохраненные состояния примеров"
+      }, [
+        $.intelDom.create("span", { "class": "storage-reset__icon", "aria-hidden": "true" }),
+        $.intelDom.create("span", { text: "Сбросить LocalStorage" })
+      ]);
+      $storageReset.on("click", function () {
+        demoStorage.clear();
+        window.location.reload();
+      });
+      $storageActions.append($storageReset);
+      $(".lead").after($storageActions);
     });
   </script>
 </body>

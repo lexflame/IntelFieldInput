@@ -1,0 +1,383 @@
+.intel-button {
+  --intel-button-bg: #1e1e1e;
+  --intel-button-bg-hover: #2b2b2b;
+  --intel-button-text: #e5e7eb;
+  --intel-button-border: #3a3a3a;
+  --intel-button-accent: #6f7bf7;
+  --intel-button-success: #48bb78;
+  --intel-button-danger: #e35d6a;
+  --intel-button-height: 48px;
+  --intel-button-radius: 10px;
+
+  display: inline-flex;
+  align-items: stretch;
+  min-height: var(--intel-button-height);
+  overflow: hidden;
+  border: 2px solid var(--intel-button-border);
+  border-radius: var(--intel-button-radius);
+  background: var(--intel-button-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  color: var(--intel-button-text);
+  font: 600 15px/1.2 "Segoe UI", system-ui, sans-serif;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.intel-button,
+.intel-button * {
+  box-sizing: border-box;
+}
+
+.intel-button--light {
+  --intel-button-bg: #fff;
+  --intel-button-bg-hover: #f4f6fb;
+  --intel-button-text: #20242c;
+  --intel-button-border: #d7dbe5;
+  box-shadow: 0 4px 14px rgba(30, 42, 70, 0.12);
+}
+
+.intel-button--small {
+  --intel-button-height: 40px;
+  --intel-button-radius: 8px;
+  font-size: 13px;
+}
+
+.intel-button--large {
+  --intel-button-height: 56px;
+  --intel-button-radius: 12px;
+  font-size: 17px;
+}
+
+.intel-button__primary,
+.intel-button__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--intel-button-height) - 4px);
+  padding: 0 20px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease, max-width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+}
+
+.intel-button__primary:hover,
+.intel-button__primary:focus-visible,
+.intel-button__control:hover,
+.intel-button__control:focus-visible {
+  background: var(--intel-button-bg-hover);
+  outline: 0;
+}
+
+.intel-button__control {
+  gap: 8px;
+  min-width: calc(var(--intel-button-height) - 4px);
+  padding: 0 14px;
+  color: var(--intel-button-accent);
+}
+
+.intel-button--split-play .intel-button__control,
+.intel-button--async-save .intel-button__control,
+.intel-button--async-transfer .intel-button__control {
+  border-left: 1px solid var(--intel-button-border);
+}
+
+.intel-button--checkbox .intel-button__control,
+.intel-button--reveal-document .intel-button__control {
+  border-right: 1px solid var(--intel-button-border);
+}
+
+.intel-button--reveal-play .intel-button__control {
+  border-left: 1px solid var(--intel-button-border);
+}
+
+.intel-button__control-icon {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.intel-button__control-icon--play {
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid currentColor;
+}
+
+.intel-button__control-icon--double-play {
+  width: 18px;
+  height: 14px;
+}
+
+.intel-button__control-icon--double-play::before,
+.intel-button__control-icon--double-play::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 8px solid currentColor;
+}
+
+.intel-button__control-icon--double-play::before {
+  left: 0;
+}
+
+.intel-button__control-icon--double-play::after {
+  left: 9px;
+}
+
+.intel-button__control-icon--checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.intel-button--checked .intel-button__control-icon--checkbox {
+  border-color: var(--intel-button-success);
+  background: var(--intel-button-success);
+}
+
+.intel-button--checked .intel-button__control-icon--checkbox::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.intel-button__control-icon--document {
+  width: 16px;
+  height: 20px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+}
+
+.intel-button__control-icon--document::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  background: var(--intel-button-bg);
+}
+
+.intel-button__control-icon--document::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 4px;
+  left: 3px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 -5px 0 currentColor;
+}
+
+.intel-button--reveal-play,
+.intel-button--reveal-document {
+  position: relative;
+  overflow: visible;
+}
+
+.intel-button--reveal-play .intel-button__primary,
+.intel-button--reveal-document .intel-button__primary {
+  position: absolute;
+  top: -2px;
+  z-index: 2;
+  min-height: var(--intel-button-height);
+  border: 2px solid var(--intel-button-border);
+  background: var(--intel-button-bg);
+  pointer-events: none;
+  opacity: 0;
+  transition: color 0.15s ease, background-color 0.15s ease, opacity 0.18s ease, transform 0.22s ease;
+}
+
+.intel-button--reveal-play .intel-button__primary {
+  right: calc(100% - 2px);
+  border-right-width: 1px;
+  border-radius: var(--intel-button-radius) 0 0 var(--intel-button-radius);
+  transform: translateX(12px);
+}
+
+.intel-button--reveal-document .intel-button__primary {
+  left: calc(100% - 2px);
+  border-left-width: 1px;
+  border-radius: 0 var(--intel-button-radius) var(--intel-button-radius) 0;
+  transform: translateX(-12px);
+}
+
+.intel-button--reveal-play:hover .intel-button__primary,
+.intel-button--reveal-play:focus-within .intel-button__primary,
+.intel-button--reveal-play.intel-button--menu-open .intel-button__primary,
+.intel-button--reveal-document:hover .intel-button__primary,
+.intel-button--reveal-document:focus-within .intel-button__primary {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.intel-button--reveal-play:hover,
+.intel-button--reveal-play:focus-within,
+.intel-button--reveal-play.intel-button--menu-open {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.intel-button--reveal-document:hover,
+.intel-button--reveal-document:focus-within {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.intel-button--menu-open .intel-button__control-icon--play {
+  margin-top: 2px;
+  margin-left: 0;
+  transform: rotate(90deg);
+}
+
+.intel-button__control-icon--play {
+  transition: transform 0.18s ease;
+}
+
+.intel-button__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 20;
+  display: grid;
+  min-width: 180px;
+  padding: 6px;
+  border: 1px solid var(--intel-button-border);
+  border-radius: 10px;
+  background: var(--intel-button-bg);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: visibility 0s linear 0.18s, opacity 0.18s ease, transform 0.18s ease;
+}
+
+.intel-button__menu--bottom-end {
+  right: 0;
+}
+
+.intel-button__menu--bottom-start {
+  left: 0;
+}
+
+.intel-button--menu-open .intel-button__menu {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.intel-button__menu-item {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--intel-button-text);
+  font: 500 14px/1.2 "Segoe UI", system-ui, sans-serif;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.intel-button__menu-item:hover,
+.intel-button__menu-item:focus-visible {
+  background: var(--intel-button-bg-hover);
+  color: var(--intel-button-accent);
+  outline: 0;
+}
+
+.intel-button__menu-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.intel-button__loader {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 180px;
+  min-height: calc(var(--intel-button-height) - 4px);
+  padding: 0 20px;
+  color: var(--intel-button-accent);
+}
+
+.intel-button__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid color-mix(in srgb, var(--intel-button-accent) 28%, transparent);
+  border-top-color: var(--intel-button-accent);
+  border-radius: 50%;
+  animation: intel-button-spin 0.75s linear infinite;
+}
+
+.intel-button--loading .intel-button__primary,
+.intel-button--loading .intel-button__control {
+  display: none;
+}
+
+.intel-button--loading .intel-button__loader {
+  display: inline-flex;
+}
+
+.intel-button--complete .intel-button__control {
+  display: none;
+}
+
+.intel-button--complete .intel-button__primary {
+  color: var(--intel-button-accent);
+}
+
+.intel-button--error {
+  border-color: var(--intel-button-danger);
+}
+
+.intel-button--disabled {
+  opacity: 0.5;
+}
+
+.intel-button--disabled .intel-button__primary,
+.intel-button--disabled .intel-button__control {
+  cursor: not-allowed;
+}
+
+.intel-button--hidden {
+  display: none;
+}
+
+@keyframes intel-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .intel-button:not(.intel-button--reveal-play):not(.intel-button--reveal-document) {
+    width: 100%;
+  }
+
+  .intel-button:not(.intel-button--reveal-play):not(.intel-button--reveal-document) .intel-button__primary {
+    flex: 1;
+  }
+}

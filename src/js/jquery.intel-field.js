@@ -10,8 +10,8 @@
 }(function ($) {
   "use strict";
 
-  if (!$) {
-    throw new Error("intelField requires jQuery");
+  if (!$ || !$.intelDom) {
+    throw new Error("intelField requires jQuery and jquery.intel-dom.js");
   }
 
   var pluginName = "intelField";
@@ -37,6 +37,7 @@
     },
     behavior: {
       allowSelect: true,
+      allowOpen: false,
       allowEdit: true,
       allowApply: true,
       allowClear: true,
@@ -47,6 +48,7 @@
       autoSaveOnSelect: true,
       autoSaveOnBlur: true,
       editOnDblClick: false,
+      openOnDblClick: false,
       viewOnBlur: true,
       borderlessView: false,
       readonlyOnView: true,
@@ -73,6 +75,7 @@
     },
     buttons: {
       select: { icon: "\u25BC", title: "Открыть список" },
+      open: { icon: "\uD83D\uDCC2", title: "Открыть" },
       edit: { icon: "\u270E", title: "Изменить" },
       apply: { icon: "\u2713", title: "Сохранить" },
       clear: { icon: "\u00D7", title: "Очистить" },
@@ -101,6 +104,7 @@
     onModeChange: null,
     onAdd: null,
     onRemove: null,
+    onOpenAction: null,
     onOpen: null,
     onClose: null,
     onSearch: null,
@@ -141,6 +145,25 @@
     $items.removeClass("intel-field__item--first intel-field__item--last");
     $items.first().addClass("intel-field__item--first");
     $items.last().addClass("intel-field__item--last");
+    updateDynamicRemoveButtons($group);
+  }
+
+  function updateDynamicRemoveButtons($group) {
+    if (!$group || !$group.length) {
+      return;
+    }
+
+    var fieldCount = $group.children(".intel-field__item").length;
+    $group.find(".intel-field__input").each(function () {
+      var instance = $(this).data(dataKey);
+      if (!instance) {
+        return;
+      }
+      var disabled = instance.options.behavior.disabled || fieldCount <= instance.options.behavior.minFields;
+      instance.$item.find(".intel-field__button--remove")
+        .prop("disabled", disabled)
+        .attr("aria-disabled", disabled ? "true" : "false");
+    });
   }
 
   function IntelField(element, options, group) {
@@ -168,6 +191,7 @@
     this.$input.after(this.originalMarker);
     this.appliedValue = this.$input.val();
     this.editStartValue = this.appliedValue;
+    $.intelDom.setAttribute(this.$input[0], "data-value", this.appliedValue == null ? "" : this.appliedValue);
 
     this.options.layout.mode = normalizeLayoutMode(this.options.layout.mode);
     if (this.options.layout.mode === "joined-row") {
@@ -183,13 +207,12 @@
 
   IntelField.prototype._build = function () {
     if (!this.$group || !this.$group.length) {
-      this.$input.wrap('<div class="intel-field-group"></div>');
-      this.$group = this.$input.parent();
+      this.$group = $.intelDom.wrap(this.$input, "div", { "class": "intel-field-group" });
     }
 
-    this.$input.wrap('<div class="intel-field__item"><div class="intel-field__row"><div class="intel-field__main"></div></div></div>');
-    this.$main = this.$input.parent();
-    this.$item = this.$main.closest(".intel-field__item");
+    this.$main = $.intelDom.wrap(this.$input, "div", { "class": "intel-field__main" });
+    var $row = $.intelDom.wrap(this.$main, "div", { "class": "intel-field__row" });
+    this.$item = $.intelDom.wrap($row, "div", { "class": "intel-field__item" });
     if (!this.$item.parent().is(this.$group)) {
       this.$item.appendTo(this.$group);
     }
@@ -203,11 +226,14 @@
 
   IntelField.prototype._renderControls = function () {
     var behavior = this.options.behavior;
-    this.$actions = $('<div class="intel-field__actions"></div>');
-    this.$outerActions = $('<div class="intel-field__outer-actions"></div>');
+    this.$actions = $.intelDom.create("div", { "class": "intel-field__actions" });
+    this.$outerActions = $.intelDom.create("div", { "class": "intel-field__outer-actions" });
 
     if (behavior.allowSelect) {
       this.$actions.append(this._button("select"));
+    }
+    if (behavior.allowOpen) {
+      this.$actions.append(this._button("open"));
     }
     if (behavior.allowEdit) {
       this.$actions.append(this._button("edit"));
@@ -240,14 +266,14 @@
 
   IntelField.prototype._button = function (action) {
     var config = this.options.buttons[action] || {};
-    return $("<button>", {
+    return $.intelDom.create("button", {
       type: "button",
       "class": "intel-field__button intel-field__button--" + action,
       "data-action": action,
       title: config.title || action,
       "aria-label": config.title || action,
       "aria-expanded": action === "select" ? "false" : null
-    }).append($("<span>", {
+    }, $.intelDom.create("span", {
       "class": "intel-field__icon",
       "aria-hidden": "true",
       text: config.icon || ""
@@ -265,7 +291,7 @@
     var menuId = "intel-field-menu-" + this.id;
     this.$searchEmpty = null;
 
-    this.$menu = $("<ul>", {
+    this.$menu = $.intelDom.create("ul", {
       "class": "intel-field__menu",
       id: menuId,
       role: "listbox",
@@ -273,30 +299,30 @@
     });
 
     if (!items.length) {
-      this.$menu.append($("<li>", {
+      this.$menu.append($.intelDom.create("li", {
         "class": "intel-field__empty",
         text: this.options.emptyText
       }));
     } else {
       $.each(items, function (index, item) {
-        var $option = $("<li>", {
+        var $option = $.intelDom.create("li", {
           "class": "intel-field__option",
           role: "option",
           tabindex: "-1",
           "data-index": index
         });
-        $option.append($("<span>", {
+        $option.append($.intelDom.create("span", {
           "class": "intel-field__option-label",
           text: self.options.itemLabel.call(self.$input[0], item, index)
         }));
-        $option.append($("<span>", {
+        $option.append($.intelDom.create("span", {
           "class": "intel-field__option-text",
           text: self.options.itemText.call(self.$input[0], item, index)
         }));
         self.$menu.append($option);
       });
 
-      this.$searchEmpty = $("<li>", {
+      this.$searchEmpty = $.intelDom.create("li", {
         "class": "intel-field__empty intel-field__search-empty",
         text: this.options.search.noResultsText
       }).hide();
@@ -378,6 +404,9 @@
       }
       event.preventDefault();
       self.setMode("edit", true);
+      if (self.options.behavior.openOnDblClick) {
+        self.open();
+      }
     });
 
     this.$item.on("click" + this.namespace, ".intel-field__option", function (event) {
@@ -387,6 +416,7 @@
     });
 
     this.$input.on("input" + this.namespace, function () {
+      self.$input.attr("data-value", self.$input.val() == null ? "" : self.$input.val());
       self.$item.removeClass("intel-field__item--invalid");
       if (self.options.search.enabled) {
         self.search(self.value());
@@ -451,6 +481,7 @@
   IntelField.prototype._handleAction = function (action) {
     var actions = {
       select: function () { this.toggle(); },
+      open: function () { this.openAction(); },
       edit: function () { this.setMode("edit", true); },
       apply: function () { this.apply(); },
       clear: function () { this.clear(); },
@@ -461,6 +492,16 @@
     if (actions[action]) {
       actions[action].call(this);
     }
+  };
+
+  IntelField.prototype.openAction = function () {
+    var payload = {
+      value: this.value(),
+      input: this.$input[0],
+      instance: this
+    };
+    this._emit("actionopen", payload, "onOpenAction");
+    return this;
   };
 
   IntelField.prototype._handleKeydown = function (event) {
@@ -744,6 +785,7 @@
     }
     var previousValue = this.$input.val();
     this.$input.val(value == null ? "" : value);
+    this.$input.attr("data-value", this.$input.val());
     if (notify !== false && previousValue !== this.$input.val()) {
       this.$input.trigger("change");
       this._emit("change", { value: this.$input.val(), previousValue: previousValue, instance: this }, "onChange");
@@ -758,7 +800,7 @@
       return null;
     }
 
-    var $newInput = $("<input>", {
+    var $newInput = $.intelDom.create("input", {
       type: this.$input.attr("type") || "text",
       name: this.$input.attr("name"),
       placeholder: this.$input.attr("placeholder"),
@@ -826,6 +868,7 @@
     this.$input.prop("disabled", disabled);
     this.$item.toggleClass("intel-field__item--disabled", disabled);
     this.$item.find(".intel-field__button").prop("disabled", disabled);
+    updateGroupState(this.$group);
     if (disabled) {
       this.close();
     }
@@ -950,7 +993,7 @@
       if (layoutMode === "joined-row" && this.length > 5) {
         throw new Error("intelField joined-row layout supports from 1 to 5 inputs");
       }
-      $sharedGroup = $('<div class="intel-field-group"></div>');
+      $sharedGroup = $.intelDom.create("div", { "class": "intel-field-group" });
       $sharedGroup.insertBefore(this.first());
     }
 
@@ -961,6 +1004,7 @@
       if (!instance && (typeof option === "object" || option === undefined)) {
         instance = new IntelField(this, option || {}, $sharedGroup);
         $element.data(dataKey, instance);
+        updateGroupState(instance.$group);
       } else if (instance && typeof option === "object") {
         instance.option(option);
       }

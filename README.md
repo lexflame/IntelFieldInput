@@ -374,10 +374,7 @@ $("#date").intelFieldDate({
     min: "01.01.2026",
     max: "31.12.2027",
     viewOnSelect: true,
-    displayFormatter: function (date, value) {
-      var day = new Intl.DateTimeFormat("ru-RU", { weekday: "long" }).format(date);
-      return value + " (" + day + ")";
-    }
+    displayFormatter: $.fn.intelFieldDate.formatDateWithWeekday
   }
 });
 
@@ -387,7 +384,7 @@ $("#time").intelFieldTime({
     minuteStep: 5,
     viewOnSelect: true,
     displayFormatter: function (time, value) {
-      return value + " (день)";
+      return value + " (" + $.fn.intelFieldTime.timeOfDay(time.hour) + ")";
     }
   }
 });
@@ -403,6 +400,10 @@ Date picker: `locale`, `format`, `weekStartsOn`, `min`, `max`, `initialDate`,
 Time picker: `format`, `minuteStep`, `initialTime`, `closeOnSelect`,
 `saveOnSelect`, `viewOnSelect`, `readonlyInput`, `displayFormatter`, `hourText`,
 `minuteText`.
+
+Datetime-плагин также экспортирует форматтеры
+`$.fn.intelFieldDate.formatDateWithWeekday(date, value, instance)` и
+`$.fn.intelFieldTime.timeOfDay(hour)`.
 
 Дата и время могут быть объединены в одну `joined-row` группу, как в примере 5
 файла `example.html`.
@@ -463,7 +464,16 @@ $("#check").intelButton({
 
 $("#switcher").intelButton({
   variant: "reveal-play",
-  onPlay: function () {}
+  menu: {
+    enabled: true,
+    items: [
+      { value: "workspace", text: "Рабочее пространство" },
+      { value: "project", text: "Текущий проект" }
+    ]
+  },
+  onMenuSelect: function (event) {
+    console.log(event.value);
+  }
 });
 
 $("#document").intelButton({
@@ -497,7 +507,7 @@ $("#transfer").intelButton({
 - `text` — обычная текстовая кнопка;
 - `split-play` — основная кнопка и отдельный Play справа;
 - `checkbox` — checkbox слева, разделитель и подпись;
-- `reveal-play` — Play слева, подпись раскрывается при наведении;
+- `reveal-play` — Play справа, подпись раскрывается влево без сдвига соседних элементов; при клике может открыть меню;
 - `reveal-document` — иконка документа слева и раскрывающаяся подпись;
 - `async-save` — Play справа, прелоадер и состояние «Редактировать»;
 - `async-transfer` — двойной Play справа, прелоадер и скрытие после завершения.
@@ -509,11 +519,11 @@ $("#transfer").intelButton({
 
 Методы: `setChecked(checked)`, `toggleChecked()`, `setLoading(loading)`,
 `complete(value)`, `fail(error)`, `reset()`, `setTheme(theme)`,
-`setDisabled(disabled)`, `destroy()`.
+`setDisabled(disabled)`, `openMenu()`, `closeMenu()`, `toggleMenu()`, `destroy()`.
 
 События: `intelbutton:click`, `intelbutton:play`, `intelbutton:change`,
 `intelbutton:document`, `intelbutton:complete`, `intelbutton:error`,
-`intelbutton:edit`.
+`intelbutton:edit`, `intelbutton:menu-toggle`, `intelbutton:select`.
 
 ## Опции
 
@@ -537,10 +547,13 @@ $("#transfer").intelButton({
 
 `allowSelect`, `allowOpen`, `allowEdit`, `allowApply`, `allowClear`, `allowAdd`,
 `allowPrepend`, `allowRemove`, `applyOnSelect`, `autoSaveOnSelect`,
-`autoSaveOnBlur`, `editOnDblClick`, `viewOnBlur`, `borderlessView`,
+`autoSaveOnBlur`, `editOnDblClick`, `openOnDblClick`, `viewOnBlur`, `borderlessView`,
 `readonlyOnView`, `outerControlsInView`, `closeOnOutsideClick`, `enterApplies`,
 `escapeAction`, `minFields`, `maxFields`, `removeLast`, `focusNewField`,
 `requireValue`, `disabled`.
+
+При достижении `minFields` плагин автоматически отключает кнопки удаления во
+всей группе и включает их снова после добавления нового поля.
 
 ### Appearance
 

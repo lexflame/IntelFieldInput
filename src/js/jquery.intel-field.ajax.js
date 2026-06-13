@@ -62,7 +62,7 @@
     }
     this.$menu.find(".intel-field__loading").remove();
     if (loading) {
-      this.$menu.prepend($("<li>", {
+      this.$menu.prepend($.intelDom.create("li", {
         "class": "intel-field__empty intel-field__loading",
         text: ajaxOptions(this).loadingText || "Загрузка..."
       }));
