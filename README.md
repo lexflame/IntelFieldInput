@@ -88,8 +88,6 @@
 | `src/css/jquery.intel-button.css` | Стили кнопочных примитивов |
 | `src/js/jquery.intel-storage.js` | Расширение для сохранения состояния в LocalStorage |
 | `example.html` | Полная интерактивная демонстрация |
-| `PHP_CONNECTORS.md` | Контракты PHP endpoint-ов |
-| `NODE_VUE_CONNECTORS.md` | Node.js API и Vue 3 интеграция |
 
 ## Подключение
 
@@ -134,6 +132,9 @@
 
 ```js
 $("#project").intelField({
+  formGroup: {
+    label: "Проект"
+  },
   items: [
     { value: "website", label: "Проект:", text: "Сайт" },
     { value: "mobile", label: "Проект:", text: "Мобильное приложение" }
@@ -177,6 +178,31 @@ $(".route-field").intelField({
 ```
 
 `layout.columns` задаёт желаемое число колонок для `separate-row`.
+
+Каждая группа полей помещается в отдельный визуальный блок. Его label и
+дополнительный CSS-класс настраиваются через `formGroup`:
+
+```js
+formGroup: {
+  label: "Параметры проекта",
+  className: "project-form-group",
+  actions: {
+    visible: true,
+    icon: "⋯",
+    title: "Действия группы",
+    expanded: false,
+    buttons: [{
+      action: "add",
+      icon: "+",
+      title: "Добавить",
+      visible: true,
+      onClick: function (event) {
+        console.log(event.instances);
+      }
+    }]
+  }
+}
+```
 
 ## Просмотр и редактирование
 
@@ -534,6 +560,7 @@ $("#transfer").intelButton({
 | `items` | Массив вариантов или функция, возвращающая массив |
 | `startMode` | `auto`, `view` или `edit` |
 | `emptyText` | Текст пустого dropdown |
+| `formGroup` | Настройки визуального блока: `label`, `className` |
 | `layout` | Режим и параметры группировки |
 | `search` | Контекстная фильтрация |
 | `behavior` | Доступные действия и поведение поля |
@@ -551,6 +578,9 @@ $("#transfer").intelButton({
 `readonlyOnView`, `outerControlsInView`, `closeOnOutsideClick`, `enterApplies`,
 `escapeAction`, `minFields`, `maxFields`, `removeLast`, `focusNewField`,
 `requireValue`, `disabled`.
+
+У каждой стандартной кнопки в `buttons` доступна опция `visible`. Для
+групповых кнопок используется `formGroup.actions.buttons[].visible`.
 
 При достижении `minFields` плагин автоматически отключает кнопки удаления во
 всей группе и включает их снова после добавления нового поля.
@@ -588,6 +618,9 @@ $field.intelField("add", "after");
 $field.intelField("remove");
 $field.intelField("openAction");
 $field.intelField("setDisabled", true);
+$field.intelField("setButtonVisible", "clear", false);
+$field.intelField("setGroupActionsVisible", true);
+$field.intelField("setGroupButtonVisible", "add", false);
 $field.intelField("setTheme", "light");
 $field.intelField("option", "appearance.theme", "light");
 $field.intelField("option", { behavior: { allowClear: false } });
@@ -599,11 +632,16 @@ $field.intelField("destroy");
 
 Каждому callback соответствует jQuery-событие с префиксом `intelfield:`.
 
+Групповые действия публикуют `intelfield:groupaction` и
+`intelfield:groupactionstoggle`, callbacks: `onGroupAction` и
+`onGroupActionsToggle`.
+
 | События core | Callback |
 | --- | --- |
 | `init`, `input`, `change`, `select` | `onInit`, `onInput`, `onChange`, `onSelect` |
 | `save`, `apply`, `modechange` | `onSave`, `onApply`, `onModeChange` |
 | `add`, `remove`, `actionopen` | `onAdd`, `onRemove`, `onOpenAction` |
+| `groupaction`, `groupactionstoggle` | `onGroupAction`, `onGroupActionsToggle` |
 | `open`, `close`, `search`, `invalid` | `onOpen`, `onClose`, `onSearch`, `onInvalid` |
 
 Дополнительные события:
